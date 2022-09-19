@@ -13,7 +13,7 @@ import middleware from '@/common/middleware/global_middleware'
 import VIRTUAL_PATH from '@/config/constant/router-path.enum'
 import { PUBLIC_PATH, VIEW_PATH } from '@/config/constant/path'
 import { getIpAddress } from './utils/ip'
-import chalk from 'chalk'
+import * as chalk from 'chalk'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {})
