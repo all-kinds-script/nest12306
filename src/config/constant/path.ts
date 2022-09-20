@@ -1,4 +1,4 @@
-import path, { normalize } from 'path'
+import { normalize } from 'path'
 
 export const ROOT_PATH = process.cwd()
 

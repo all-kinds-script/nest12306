@@ -1,9 +1,9 @@
 export class ExampleEvent {
-  constructor(private payload: ExampleEventPayload) {}
+    constructor(private payload: ExampleEventPayload) {}
 }
 
 interface ExampleEventPayload {
-  readonly orderId: number
+    readonly orderId: number
 
-  readonly payload: object
+    readonly payload: object
 }
