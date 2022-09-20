@@ -14,8 +14,11 @@ import { BullModule } from '@nestjs/bull'
 import { EventEmitterModule } from '@nestjs/event-emitter'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { Ms12306Module } from './module/ms12306/ms12306.module'
-import { HttpModule } from '@nestjs/axios'
 
+// https://docs.nestjs.com/fundamentals/dynamic-modules#community-guidelines 动态模块
+// register，您期望使用特定配置配置动态模块，仅供调用模块使用。
+// forRoot，您期望配置一个动态模块并在多个地方重用该配置
+// forFeature，您希望使用动态模块的配置(forRoot)，但需要修改一些特定于动态模块需求的配置
 @Module({
     // imports 导入模块相当于导入这个模块所有的（包括这个模块导入的其他模块 包括：providers、imports）
     imports: [
@@ -46,6 +49,18 @@ import { HttpModule } from '@nestjs/axios'
         // 事件模块 注册发生在onApplicationBootstrap生命周期钩子
         EventEmitterModule.forRoot(eventConfig),
 
+        // SPA 静态网站并将其内容放置在rootPath属性指定的位置。
+        ServeStaticModule.forRoot({
+            // 静态文件根目录
+            rootPath: CLIENT_PATH,
+            // 将提供静态应用程序的根路径
+            serveRoot: `/${VIRTUAL_PATH.SPA_RENDER}`,
+            // 呈现静态应用程序的路径（与serveRoot值连接）。默认值：*（通配符 - 所有路径）。
+            renderPath: '*',
+            // 提供静态应用程序时要排除的路径
+            exclude: ['/api/nest/*', ''],
+        }),
+
         // 日志模块
         WinstonModule.forRootAsync({
             imports: [ConfigModule],
@@ -75,25 +90,13 @@ import { HttpModule } from '@nestjs/axios'
             },
         }),
 
-        // 缓存模块
+        // 缓存模块 虽然是 register 但是有 global 配置项
         CacheModule.registerAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: async (config: ConfigService) => {
                 return config.get('cache')
             },
-        }),
-
-        // SPA 静态网站并将其内容放置在rootPath属性指定的位置。
-        ServeStaticModule.forRoot({
-            // 静态文件根目录
-            rootPath: CLIENT_PATH,
-            // 将提供静态应用程序的根路径
-            serveRoot: `/${VIRTUAL_PATH.SPA_RENDER}`,
-            // 呈现静态应用程序的路径（与serveRoot值连接）。默认值：*（通配符 - 所有路径）。
-            renderPath: '*',
-            // 提供静态应用程序时要排除的路径
-            exclude: ['/api/nest/*', ''],
         }),
 
         Ms12306Module,

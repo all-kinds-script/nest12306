@@ -5,10 +5,16 @@ import { LoadTxtService } from './loadTxt.service'
 import { HttpModule } from '@nestjs/axios'
 import { AxiosService } from '@/module/ms12306/axios.service'
 import { QueryService } from '@/module/ms12306/query.service'
-import axiosConfig from '@/config/axios.config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 
 @Module({
-    imports: [HttpModule.register(axiosConfig)],
+    imports: [
+        HttpModule.registerAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => config.get('axios'),
+        }),
+    ],
     controllers: [Ms12306Controller],
     providers: [Ms12306Service, LoadTxtService, AxiosService, QueryService],
 })

@@ -1,6 +1,6 @@
-import { HttpModuleOptions } from '@nestjs/axios'
+import { registerAs } from '@nestjs/config'
 
-const axiosConfig: HttpModuleOptions = {
+const axiosConfig = registerAs('axios', () => ({
     baseURL: 'https://kyfw.12306.cn',
     timeout: 5000,
     withCredentials: true,
@@ -17,6 +17,6 @@ const axiosConfig: HttpModuleOptions = {
     validateStatus(status: number) {
         return status >= 200 && status < 400
     },
-}
+}))
 
 export default axiosConfig

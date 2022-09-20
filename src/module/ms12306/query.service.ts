@@ -17,9 +17,7 @@ export class QueryService {
 
         this.axiosService.initTicketsType().subscribe((value) => {
             this.loadTxtService.txtInfo.forEach((item) => {
-                this.axiosService.queryTickets(value, '2020-9-30', item.from.key, item.arrive.key).subscribe((v) => {
-                    console.log(v)
-                })
+                this.axiosService.queryTickets(value, '2020-9-30', item.from.key, item.arrive.key).subscribe((v) => {})
             })
         })
     }
