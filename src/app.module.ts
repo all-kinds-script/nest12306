@@ -14,6 +14,7 @@ import { BullModule } from '@nestjs/bull'
 import { EventEmitterModule } from '@nestjs/event-emitter'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { Ms12306Module } from './module/ms12306/ms12306.module'
+import { HttpModule } from '@nestjs/axios'
 
 @Module({
     // imports 导入模块相当于导入这个模块所有的（包括这个模块导入的其他模块 包括：providers、imports）
