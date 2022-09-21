@@ -14,6 +14,8 @@ import { BullModule } from '@nestjs/bull'
 import { EventEmitterModule } from '@nestjs/event-emitter'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { Ms12306Module } from './module/ms12306/ms12306.module'
+import { QueryModule } from './module/query/query.module';
+import { ConfigModule } from './module/config/config.module';
 
 // https://docs.nestjs.com/fundamentals/dynamic-modules#community-guidelines 动态模块
 // register，您期望使用特定配置配置动态模块，仅供调用模块使用。
@@ -100,6 +102,10 @@ import { Ms12306Module } from './module/ms12306/ms12306.module'
         }),
 
         Ms12306Module,
+
+        QueryModule,
+
+        ConfigModule,
 
         // 路由器模块
         // RouterModule.register([

@@ -3,7 +3,7 @@ import { readFileSync } from 'fs'
 import { join } from 'path'
 
 @Injectable()
-export class LoadTxtService {
+export class TxtService {
     public txtInfo
 
     constructor() {
