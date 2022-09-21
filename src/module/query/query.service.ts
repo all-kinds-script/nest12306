@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { AxiosService } from '@/module/ms12306/axios.service'
-import { LoadTxtService } from '@/module/ms12306/loadTxt.service'
+import { TxtService } from '@/module/ms-config/txt.service'
+import { AxiosService } from '@/module/axios/axios.service'
 
 @Injectable()
 export class QueryService {
-    constructor(private readonly axiosService: AxiosService, private readonly loadTxtService: LoadTxtService) {
+    constructor(private readonly axiosService: AxiosService, private readonly loadTxtService: TxtService) {
         this.init()
     }
 
