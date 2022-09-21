@@ -1,11 +1,11 @@
-import { networkInterfaces } from 'os'
+import { NetworkInterfaceInfo, networkInterfaces } from 'os'
 
 //获取 mac windows ip 地址
-export function getIpAddress(ip) {
+export function getIpAddress(ip?) {
     // 网络接口
-    const interfaces = networkInterfaces()
+    const interfaces: NodeJS.Dict<NetworkInterfaceInfo[]> = networkInterfaces()
 
-    const Inter = interfaces['WLAN'] || interfaces['en0']
+    const Inter: NetworkInterfaceInfo[] = interfaces['WLAN'] || interfaces['en0']
     let ipAddress = 'localhost'
 
     for (const value of Inter) {
@@ -14,7 +14,8 @@ export function getIpAddress(ip) {
             ipAddress = address
         }
 
-        ip(ipAddress)
-        return ipAddress
+        ip && ip(ipAddress)
     }
+
+    return ipAddress
 }

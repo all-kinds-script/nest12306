@@ -3,12 +3,11 @@ import { readFileSync } from 'fs'
 import { join } from 'path'
 
 @Injectable()
-export class TxtService {
-    public txtInfo
+export class StationsConfigService {
+    public stationsTxtInfo
 
     constructor() {
         this.loadStationsTxt()
-        this.loadCdnTxt()
     }
 
     protected loadStationsTxt() {
@@ -44,10 +43,6 @@ export class TxtService {
             queryAddress.push(info)
         }
 
-        this.txtInfo = queryAddress
-    }
-
-    protected loadCdnTxt() {
-        const cdnTxt = readFileSync(join(process.cwd(), 'public/txt/cdn.txt'), 'utf-8')
+        this.stationsTxtInfo = queryAddress
     }
 }

@@ -52,17 +52,17 @@ async function bootstrap() {
     app.setViewEngine('pug')
 
     const port = 3000
-    await app.listen(
-        port,
-        getIpAddress((address) => {
-            console.log('\r\n')
-            console.log(chalk.blue(`接口地址: http://${address}:${port}/${VIRTUAL_PATH.API}/v${VIRTUAL_PATH.VERSION}`))
-            console.log(chalk.blue(`MVC渲染: http://${address}:${port}/${VIRTUAL_PATH.API}/v${VIRTUAL_PATH.VERSION}/app`))
-            console.log(chalk.blue(`SPA 渲染路径: http://${address}:${port}/${VIRTUAL_PATH.SPA_RENDER}`))
-            console.log(chalk.blue(`静态资源路径: http://${address}:${port}/${VIRTUAL_PATH.STATIC_ASSETS}/upload/日期文件夹/文件名.ext`))
-            console.log('\r\n')
-        })
-    )
+
+    await app.listen(port, () => {
+        const ip = getIpAddress()
+
+        console.log('\r\n')
+        console.log(chalk.blue(`接口地址: http://${ip}:${port}/${VIRTUAL_PATH.API}/v${VIRTUAL_PATH.VERSION}`))
+        console.log(chalk.blue(`MVC渲染: http://${ip}:${port}/${VIRTUAL_PATH.API}/v${VIRTUAL_PATH.VERSION}/app`))
+        console.log(chalk.blue(`SPA 渲染路径: http://${ip}:${port}/${VIRTUAL_PATH.SPA_RENDER}`))
+        console.log(chalk.blue(`静态资源路径: http://${ip}:${port}/${VIRTUAL_PATH.STATIC_ASSETS}/upload/日期文件夹/文件名.ext`))
+        console.log('\r\n')
+    })
 }
 
 bootstrap().then()

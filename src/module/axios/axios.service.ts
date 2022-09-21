@@ -43,6 +43,7 @@ export class AxiosService {
                 'leftTicketDTO.to_station': arriveStation,
                 purpose_codes: 'ADULT',
             },
+            maxRedirects: 0,
         })
 
         return new Observable((observer) => {
@@ -51,7 +52,7 @@ export class AxiosService {
                     observer.next(res.data)
                 },
                 error(err) {
-                    console.log(err)
+                    console.log(err.data)
                 },
             })
         })
@@ -89,15 +90,15 @@ export class AxiosService {
             headers: {},
         })
 
-        return new Observable((observer) => {
+        return new Observable(() => {
             rx.subscribe((res) => {
                 const data = res.data
                 if (data.indexOf('callbackFunction') >= 0) {
                     const json = data.substring(18, data.length - 2)
                     const object = JSON.parse(json)
 
-                    // this.axios.defaults.headers.common['RAIL_EXPIRATION'] = object['exp']
-                    // this.axios.defaults.headers.common['RAIL_DEVICEID'] = object['dfp']
+                    this.axios.axiosRef.defaults.headers.common['RAIL_EXPIRATION'] = object['exp']
+                    this.axios.axiosRef.defaults.headers.common['RAIL_DEVICEID'] = object['dfp']
                 }
             })
         })

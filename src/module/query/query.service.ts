@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { TxtService } from '@/module/ms-config/txt.service'
 import { AxiosService } from '@/module/axios/axios.service'
+import { StationsConfigService } from '@/module/config/stations-config.service'
 
 @Injectable()
 export class QueryService {
-    constructor(private readonly axiosService: AxiosService, private readonly loadTxtService: TxtService) {
+    constructor(private readonly axiosService: AxiosService, private readonly stationsConfigService: StationsConfigService) {
         this.init()
     }
 
@@ -15,8 +15,10 @@ export class QueryService {
         })
 
         this.axiosService.initTicketsType().subscribe((value) => {
-            this.loadTxtService.txtInfo.forEach((item) => {
-                this.axiosService.queryTickets(value, '2020-9-30', item.from.key, item.arrive.key).subscribe((v) => {})
+            this.stationsConfigService.stationsTxtInfo.forEach((item) => {
+                this.axiosService.queryTickets(value, '2020-9-30', item.from.key, item.arrive.key).subscribe((v) => {
+                    console.log(v)
+                })
             })
         })
     }
