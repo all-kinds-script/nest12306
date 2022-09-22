@@ -18,6 +18,7 @@ import { QueryModule } from './module/query/query.module'
 import { MsConfigModule } from './module/config/ms-config.module'
 import { AxiosModule } from './module/axios/axios.module'
 import { EmailModule } from './module/email/email.module'
+import { MsLoginModule } from './module/ms-login/ms-login.module';
 
 // https://docs.nestjs.com/fundamentals/dynamic-modules#community-guidelines 动态模块
 // register，您期望使用特定配置配置动态模块，仅供调用模块使用。
@@ -109,6 +110,7 @@ import { EmailModule } from './module/email/email.module'
         MsConfigModule,
         AxiosModule,
         EmailModule,
+        MsLoginModule,
 
         // 路由器模块
         // RouterModule.register([

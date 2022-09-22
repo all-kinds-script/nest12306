@@ -5,6 +5,8 @@ import QuerySeat from '@/enum/query-seat'
 import { MsConfigService } from '@/module/config/ms-config.service'
 import { catchError, EMPTY, interval, take } from 'rxjs'
 import { EmailService } from '@/module/email/email.service'
+import AxiosQueryService from '@/module/axios/axios-query.service'
+import AxiosCommonService from '@/module/axios/axios-common.service'
 
 @Injectable()
 export class QueryService {
@@ -12,11 +14,12 @@ export class QueryService {
     private task = []
 
     constructor(
-        private readonly axiosService: AxiosService,
+        private readonly axiosQueryService: AxiosQueryService,
+        private readonly axiosCommonService: AxiosCommonService,
         private readonly msConfigService: MsConfigService,
         private readonly emailService: EmailService
     ) {
-        this.setCookie()
+        this.axiosCommonService.refreshCookie()
         this.initType()
         this.initQueryTicketTask()
         this.startQueryTicket()
@@ -24,14 +27,7 @@ export class QueryService {
 
     // 设置查票类型
     initType() {
-        this.axiosService.initTicketsType().subscribe((value) => (this.ticketsType = value))
-    }
-
-    // 根据浏览器标识 获取 到期时间 设备ID 字段头信息 转为 cookie 信息
-    setCookie() {
-        this.axiosService
-            .getBrowserDeviceId()
-            .subscribe((value) => this.axiosService.getExpAndDeviceIdToCookie(value).subscribe())
+        this.axiosQueryService.initTicketsType().subscribe((value) => (this.ticketsType = value))
     }
 
     public initQueryTicketTask() {
@@ -55,7 +51,7 @@ export class QueryService {
             next: (index) => {
                 const { start_time, from, to, seats, train_code } = this.task[index]
 
-                this.axiosService.queryTickets(this.ticketsType, start_time, from, to).subscribe((res) => {
+                this.axiosQueryService.queryTickets(this.ticketsType, start_time, from, to).subscribe((res) => {
                     for (const result of res.data.data.result) {
                         const ticket = result.split('|')
 

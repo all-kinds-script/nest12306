@@ -5,6 +5,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 
 import { AxiosCdnService } from '@/module/axios/axios-cdn.service'
 import { CdnConfigService } from '@/module/config/cdn-config.service'
+import AxiosQrLoginService from '@/module/axios/axios-qr-login.service'
+import AxiosCommonService from '@/module/axios/axios-common.service'
+import AxiosQueryService from '@/module/axios/axios-query.service'
 
 @Module({
     imports: [
@@ -14,7 +17,21 @@ import { CdnConfigService } from '@/module/config/cdn-config.service'
             useFactory: (config: ConfigService) => config.get('axios'),
         }),
     ],
-    providers: [AxiosService, CdnConfigService, AxiosCdnService],
-    exports: [AxiosService, AxiosCdnService, CdnConfigService],
+    providers: [
+        AxiosService,
+        CdnConfigService,
+        AxiosCdnService,
+        AxiosQrLoginService,
+        AxiosCommonService,
+        AxiosQueryService,
+    ],
+    exports: [
+        AxiosService,
+        AxiosCdnService,
+        CdnConfigService,
+        AxiosQrLoginService,
+        AxiosQueryService,
+        AxiosCommonService,
+    ],
 })
 export class AxiosModule {}
