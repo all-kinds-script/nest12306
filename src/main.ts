@@ -60,7 +60,9 @@ async function bootstrap() {
         console.log(chalk.blue(`接口地址: http://${ip}:${port}/${VIRTUAL_PATH.API}/v${VIRTUAL_PATH.VERSION}`))
         console.log(chalk.blue(`MVC渲染: http://${ip}:${port}/${VIRTUAL_PATH.API}/v${VIRTUAL_PATH.VERSION}/app`))
         console.log(chalk.blue(`SPA 渲染路径: http://${ip}:${port}/${VIRTUAL_PATH.SPA_RENDER}`))
-        console.log(chalk.blue(`静态资源路径: http://${ip}:${port}/${VIRTUAL_PATH.STATIC_ASSETS}/upload/日期文件夹/文件名.ext`))
+        console.log(
+            chalk.blue(`静态资源路径: http://${ip}:${port}/${VIRTUAL_PATH.STATIC_ASSETS}/upload/日期文件夹/文件名.ext`)
+        )
         console.log('\r\n')
     })
 }

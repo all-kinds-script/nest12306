@@ -8,6 +8,15 @@ import axiosConfig from '@/config/axios.config'
 import jobYmlConfig from '@/config/job-yml.config'
 export { default as eventConfig } from './event.config'
 
-const allConfig = [nestConfig, emailConfig, cacheConfig, queueConfig, dbConfig, winstonConfig, axiosConfig, jobYmlConfig]
+const allConfig = [
+    nestConfig,
+    emailConfig,
+    cacheConfig,
+    queueConfig,
+    dbConfig,
+    winstonConfig,
+    axiosConfig,
+    jobYmlConfig,
+]
 
 export default allConfig
