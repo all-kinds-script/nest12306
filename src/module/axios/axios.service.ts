@@ -34,7 +34,7 @@ export class AxiosService {
     }
 
     // 查票
-    queryTickets(type: string, leftDate: string, fromStation: string, arriveStation: string): Observable<string> {
+    queryTickets(type: string, leftDate: string, fromStation: string, arriveStation: string): Observable<any> {
         // queryX queryZ
         const rx = this.axios.get(`/otn/${type}`, {
             params: {
@@ -42,6 +42,9 @@ export class AxiosService {
                 'leftTicketDTO.from_station': fromStation,
                 'leftTicketDTO.to_station': arriveStation,
                 purpose_codes: 'ADULT',
+            },
+            headers: {
+                cookie: '_jc_save_fromStation=%u5317%u4EAC%2CBJP',
             },
             maxRedirects: 0,
         })
@@ -97,8 +100,10 @@ export class AxiosService {
                     const json = data.substring(18, data.length - 2)
                     const object = JSON.parse(json)
 
-                    this.axios.axiosRef.defaults.headers.common['RAIL_EXPIRATION'] = object['exp']
-                    this.axios.axiosRef.defaults.headers.common['RAIL_DEVICEID'] = object['dfp']
+                    const RAIL_EXPIRATION = `RAIL_EXPIRATION=${object['exp']};`
+                    const RAIL_DEVICEID = `RAIL_DEVICEID=${object['dfp']};`
+
+                    this.axios.axiosRef.defaults.headers.common['cookie'] = `${RAIL_EXPIRATION}${RAIL_DEVICEID}`
                 }
             })
         })

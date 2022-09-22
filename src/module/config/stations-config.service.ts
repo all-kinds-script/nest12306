@@ -4,7 +4,7 @@ import { join } from 'path'
 
 @Injectable()
 export class StationsConfigService {
-    public stationsTxtInfo
+    public stations // 读取的所有站点
 
     constructor() {
         this.loadStationsTxt()
@@ -12,13 +12,14 @@ export class StationsConfigService {
 
     protected loadStationsTxt() {
         const stationsTxt = readFileSync(join(process.cwd(), 'public/txt/stations.txt'), 'utf-8')
-        let stations: string[] | object = stationsTxt.split('@')
+        let stationsArr: string[] | object = stationsTxt.split('@')
+        const stations = {}
 
-        stations =
-            Array.isArray(stations) &&
-            stations.map((item: string | object) => {
+        Array.isArray(stationsArr) &&
+            stationsArr.map((item: string | object) => {
                 const temp = typeof item === 'string' && item.split('|')
-                return {
+
+                stations[temp[1]] = {
                     key: temp[2],
                     name: temp[1],
                     pinyin: temp[3],
@@ -26,23 +27,18 @@ export class StationsConfigService {
                 }
             })
 
-        const fromStr = '北京'
-        const arriveStr = '驻马店'
+        this.stations = stations
+    }
 
-        const queryAddress = []
-        if (stations instanceof Array) {
-            const info: { from?: any; arrive?: any } = {}
-            for (const item of stations) {
-                if (item.name === fromStr) {
-                    info.from = item
-                } else if (item.name === arriveStr) {
-                    info.arrive = item
-                }
-            }
+    public replaceStationToCode(configStations) {
+        configStations.forEach((config, index) => {
+            const from = config.from
+            const to = config.to
 
-            queryAddress.push(info)
-        }
+            configStations[index].from = this.stations[from].key
+            configStations[index].to = this.stations[to].key
+        })
 
-        this.stationsTxtInfo = queryAddress
+        return configStations
     }
 }

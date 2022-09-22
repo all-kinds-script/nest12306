@@ -5,8 +5,9 @@ import emailConfig from './email.config'
 import winstonConfig from './logger.config'
 import queueConfig from './queue.config'
 import axiosConfig from '@/config/axios.config'
+import ymlConfig from '@/config/yml.config'
 export { default as eventConfig } from './event.config'
 
-const allConfig = [nestConfig, emailConfig, cacheConfig, queueConfig, dbConfig, winstonConfig, axiosConfig]
+const allConfig = [nestConfig, emailConfig, cacheConfig, queueConfig, dbConfig, winstonConfig, axiosConfig, ymlConfig]
 
 export default allConfig

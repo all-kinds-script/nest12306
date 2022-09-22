@@ -103,13 +103,9 @@ import { AxiosModule } from './module/axios/axios.module'
         }),
 
         Ms12306Module,
-
         QueryModule,
-
         ConfigModule,
-
         MsConfigModule,
-
         AxiosModule,
 
         // 路由器模块

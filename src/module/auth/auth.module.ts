@@ -1,4 +1,4 @@
-// import { JWT_EXPIRES_IN, JWT_SECRET } from '@/config/constant/jwt'
+// import { JWT_EXPIRES_IN, JWT_SECRET } from '@/constant/jwt'
 // import { UserModule } from '@/module/user/user.module'
 //
 // import { Module } from '@nestjs/common'
