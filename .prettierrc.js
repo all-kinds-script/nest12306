@@ -1,3 +1,4 @@
+// webstorm 右侧细线：编辑器 -> 代码样式 -> 强制换行位置 默认：120
 module.exports = {
     useTabs: false, // 使用tab缩进，默认false
     tabWidth: 4, // tab缩进大小,默认为2
