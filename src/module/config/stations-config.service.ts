@@ -12,7 +12,7 @@ export class StationsConfigService {
 
     protected loadStationsTxt() {
         const stationsTxt = readFileSync(join(process.cwd(), 'public/txt/stations.txt'), 'utf-8')
-        let stationsArr: string[] | object = stationsTxt.split('@')
+        const stationsArr: string[] | object = stationsTxt.split('@')
         const stations = {}
 
         Array.isArray(stationsArr) &&
@@ -28,17 +28,5 @@ export class StationsConfigService {
             })
 
         this.stations = stations
-    }
-
-    public replaceStationToCode(configStations) {
-        configStations.forEach((config, index) => {
-            const from = config.from
-            const to = config.to
-
-            configStations[index].from = this.stations[from].key
-            configStations[index].to = this.stations[to].key
-        })
-
-        return configStations
     }
 }

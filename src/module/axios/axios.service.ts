@@ -43,16 +43,13 @@ export class AxiosService {
                 'leftTicketDTO.to_station': arriveStation,
                 purpose_codes: 'ADULT',
             },
-            headers: {
-                cookie: '_jc_save_fromStation=%u5317%u4EAC%2CBJP',
-            },
             maxRedirects: 0,
         })
 
         return new Observable((observer) => {
             rx.subscribe({
                 next(res) {
-                    observer.next(res.data)
+                    observer.next(res)
                 },
                 error(err) {
                     console.log(err.data)

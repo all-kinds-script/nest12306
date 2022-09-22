@@ -3,11 +3,12 @@ import { ConfigService } from '@nestjs/config'
 import { StationsConfigService } from '@/module/config/stations-config.service'
 import QuerySeat from '@/enum/query-seat'
 import OrderSeat from '@/enum/order-seat'
+import * as dayjs from 'dayjs'
 
 @Injectable()
 export class MsConfigService {
-    public originJob // 读取出来 yml 的配置
-    public job // 修改为 code 的配置
+    public originAccounts // 读取出来 yml 的配置
+    public accounts // 修改为 code 的配置
     public runtime
 
     constructor(private readonly configService: ConfigService, private stationsConfigService: StationsConfigService) {
@@ -16,31 +17,38 @@ export class MsConfigService {
     }
 
     private loadYml() {
-        const yml = this.configService.get('yml')
-
+        const yml = this.configService.get('job-yml')
         this.runtime = yml.runtime
-        this.job = this.originJob = yml.job
+        this.accounts = this.originAccounts = yml.jobs
     }
 
     private replaceInfoToCode() {
-        this.job.forEach((config, index) => {
-            // 替换 地点编码
-            this.job[index].stations = this.stationsConfigService.replaceStationToCode(config.stations)
+        this.accounts = this.accounts.map((account) => {
+            account.job = account.job.map((job) => {
+                // 替换 地点编码
+                const stations = this.stationsConfigService.stations
+                job.from = stations[job.from].key
+                job.to = stations[job.to].key
 
-            // 替换 座位
-            this.job[index]['seats_query'] = []
-            this.job[index]['seats_order'] = []
-            this.job[index].seats.forEach((seat, seatIndex) => {
-                this.job[index]['seats_query'][seatIndex] = QuerySeat[seat]
-                this.job[index]['seats_order'][seatIndex] = OrderSeat[seat]
+                job.start_time = dayjs(job.start_time).format('YYYY-MM-DD')
 
-                console.log(this.job[index])
+                // 替换 座位
+                job.seats = job.seats.map((seat) => {
+                    return {
+                        seats_query: QuerySeat[seat],
+                        seats_order: OrderSeat[seat],
+                    }
+                })
+
+                // 替换 火车编码为大写
+                job.train_code = job.train_code.map((trainCode) => {
+                    return trainCode.toUpperCase()
+                })
+
+                return job
             })
 
-            // 替换 火车编码为大写
-            this.job[index].train_code = this.job[index].train_code.map((trainCode) => {
-                return trainCode.toUpperCase()
-            })
+            return account
         })
     }
 }
