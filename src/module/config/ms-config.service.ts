@@ -24,7 +24,10 @@ export class MsConfigService {
 
     private replaceInfoToCode() {
         this.job.forEach((config, index) => {
+            // 替换 地点编码
             this.job[index].stations = this.stationsConfigService.replaceStationToCode(config.stations)
+
+            // 替换 座位
             this.job[index]['seats_query'] = []
             this.job[index]['seats_order'] = []
             this.job[index].seats.forEach((seat, seatIndex) => {
@@ -32,6 +35,11 @@ export class MsConfigService {
                 this.job[index]['seats_order'][seatIndex] = OrderSeat[seat]
 
                 console.log(this.job[index])
+            })
+
+            // 替换 火车编码为大写
+            this.job[index].train_code = this.job[index].train_code.map((trainCode) => {
+                return trainCode.toUpperCase()
             })
         })
     }

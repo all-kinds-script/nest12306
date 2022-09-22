@@ -87,7 +87,7 @@ export class AxiosService {
     }
 
     // 获取到期时间 设备ID 字段头信息
-    getExpAndDeviceId(url: string): Observable<AxiosResponse<string>> {
+    getExpAndDeviceIdToCookie(url: string): Observable<AxiosResponse<string>> {
         const rx = this.axios.get(url, {
             baseURL: '',
             headers: {},

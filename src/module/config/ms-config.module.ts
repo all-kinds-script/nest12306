@@ -9,6 +9,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 @Module({
     imports: [AxiosModule, ConfigModule],
     providers: [MsConfigService, CdnConfigService, StationsConfigService, ConfigService],
-    exports: [StationsConfigService, CdnConfigService],
+    exports: [StationsConfigService, CdnConfigService, MsConfigService],
 })
 export class MsConfigModule {}

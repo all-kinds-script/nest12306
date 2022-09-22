@@ -7,5 +7,6 @@ import { Ms12306Service } from './ms12306.service'
     imports: [],
     controllers: [Ms12306Controller],
     providers: [Ms12306Service],
+    exports: [Ms12306Service],
 })
 export class Ms12306Module {}
