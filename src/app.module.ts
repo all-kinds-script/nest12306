@@ -36,6 +36,7 @@ import cacheConfig from '@/config/cache.config'
             cache: true, // 是否缓存
             expandVariables: true, // 启用环境变量扩展${}
             load: allConfig,
+            encoding: 'utf-8',
             // 校验是否符合规则，否则异常
             validationSchema: Joi.object({
                 node_env: Joi.string().valid('development', 'production').default('development'),

@@ -14,6 +14,7 @@ import VIRTUAL_PATH from '@/config/constant/router-path.enum'
 import { PUBLIC_PATH, VIEW_PATH } from '@/config/constant/path'
 import { getIpAddress } from './utils/ip'
 import * as chalk from 'chalk'
+import { ConfigService } from '@nestjs/config'
 
 async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule, {})
@@ -51,7 +52,7 @@ async function bootstrap() {
     app.setBaseViewsDir(VIEW_PATH)
     app.setViewEngine('pug')
 
-    const port = 3000
+    const port = app.get(ConfigService).get('PORT')
 
     await app.listen(port, () => {
         const ip = getIpAddress()
