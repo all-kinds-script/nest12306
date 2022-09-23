@@ -1,21 +1,26 @@
-import { Injectable } from '@nestjs/common'
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common'
 import AxiosQrLoginService from '@/module/axios/axios-qr-login.service'
 import AxiosCommonService from '@/module/axios/axios-common.service'
 import { concatMap, of } from 'rxjs'
 import { zip } from 'rxjs'
 import { unlinkSync } from 'fs'
+import { Cache } from 'cache-manager'
 
 @Injectable()
 export class MsLoginService {
     constructor(
         private readonly axiosQrLoginService: AxiosQrLoginService,
-        private readonly axiosCommonService: AxiosCommonService
+        private readonly axiosCommonService: AxiosCommonService,
+        @Inject(CACHE_MANAGER) private cacheManage: Cache
     ) {}
 
-    qrLogin() {
-        const rx = zip(this.axiosCommonService.refreshCookie(), this.axiosQrLoginService.downloadQrToDir())
+    async qrLogin() {
+        const RAIL_DEVICEID = await this.cacheManage.get('RAIL_DEVICEID')
+        const RAIL_EXPIRATION = await this.cacheManage.get('RAIL_EXPIRATION')
 
-        rx.subscribe(([{ RAIL_DEVICEID, RAIL_EXPIRATION }, { uuid, filePath }]) => {
+        const rx = zip(this.axiosQrLoginService.downloadQrToDir(), this.axiosCommonService.refreshCookie())
+
+        rx.subscribe(([{ uuid, filePath }]) => {
             this.axiosQrLoginService.authQrCheck(RAIL_DEVICEID, RAIL_EXPIRATION, uuid).subscribe((data) => {
                 if (data.result_code === 1) {
                     console.log('请确认登录')

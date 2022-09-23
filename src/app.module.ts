@@ -18,7 +18,8 @@ import { QueryModule } from './module/query/query.module'
 import { MsConfigModule } from './module/config/ms-config.module'
 import { AxiosModule } from './module/axios/axios.module'
 import { EmailModule } from './module/email/email.module'
-import { MsLoginModule } from './module/ms-login/ms-login.module';
+import { MsLoginModule } from './module/ms-login/ms-login.module'
+import cacheConfig from '@/config/cache.config'
 
 // https://docs.nestjs.com/fundamentals/dynamic-modules#community-guidelines 动态模块
 // register，您期望使用特定配置配置动态模块，仅供调用模块使用。
@@ -47,6 +48,10 @@ import { MsLoginModule } from './module/ms-login/ms-login.module';
                 abortEarly: false,
             },
         }),
+
+        // 缓存模块 虽然是 register 但是有 global 配置项
+        // 非异步不能在注册模块时的构造函数中使用
+        CacheModule.register(cacheConfig()),
 
         // 定时任务模块
         ScheduleModule.forRoot(),
@@ -92,15 +97,6 @@ import { MsLoginModule } from './module/ms-login/ms-login.module';
             useFactory: (config: ConfigService) => {
                 // 拿到我们配置的config别名 #registerAs方法
                 return config.get('email')
-            },
-        }),
-
-        // 缓存模块 虽然是 register 但是有 global 配置项
-        CacheModule.registerAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: async (config: ConfigService) => {
-                return config.get('cache')
             },
         }),
 
