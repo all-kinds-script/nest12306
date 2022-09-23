@@ -1,4 +1,4 @@
-import {SetMetadata} from '@nestjs/common'
+import { SetMetadata } from '@nestjs/common'
 
 /**
  * 接口不用验证
