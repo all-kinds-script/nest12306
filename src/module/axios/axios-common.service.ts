@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { map, Observable } from 'rxjs'
+import { concatMap, map, Observable, of } from 'rxjs'
 import { Buffer } from 'buffer'
 import { HttpService } from '@nestjs/axios'
 
@@ -9,11 +9,7 @@ export default class AxiosCommonService {
 
     // 根据浏览器标识 获取 到期时间 设备ID 字段头信息 转为 cookie 信息
     refreshCookie() {
-        return new Observable((observer) => {
-            this.getBrowserDeviceId().subscribe((value) =>
-                this.getExpAndDeviceIdToCookie(value).subscribe((cookie) => observer.next(cookie))
-            )
-        })
+        return this.getBrowserDeviceId().pipe(concatMap((value) => this.getExpAndDeviceIdToCookie(value)))
     }
 
     // 获取加密后的浏览器特征 ID
@@ -42,7 +38,7 @@ export default class AxiosCommonService {
     }
 
     // 获取到期时间 设备ID 字段头信息
-    getExpAndDeviceIdToCookie(url: string): Observable<object> {
+    getExpAndDeviceIdToCookie(url: string): Observable<{ RAIL_EXPIRATION: string; RAIL_DEVICEID: string }> {
         const rx = this.axios.get(url, {
             baseURL: '',
             headers: {},

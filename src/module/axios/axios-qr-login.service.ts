@@ -4,6 +4,7 @@ import { mkdirSync, statSync, writeFileSync } from 'fs'
 import { PUBLIC_PATH } from '@/config/constant/path'
 import { nanoid } from 'nanoid'
 import { Observable } from 'rxjs'
+import { VStringObject } from '@/typings/common'
 
 @Injectable()
 export default class AxiosQrLoginService {
@@ -31,7 +32,7 @@ export default class AxiosQrLoginService {
         })
     }
 
-    downloadQrToDir() {
+    downloadQrToDir(): Observable<VStringObject> {
         return new Observable((observer) => {
             const rx = this.axios.get('/passport/web/create-qr64', {
                 params: {
@@ -70,10 +71,8 @@ export default class AxiosQrLoginService {
         return new Observable((observer) => {
             const rx = this.axios.get('/otn/login/userLogin', {})
 
-            console.log(1)
             rx.subscribe({
                 next: (res) => {
-                    console.log(res)
                     observer.next(res.data)
                 },
                 error: (err) => {
