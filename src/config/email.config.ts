@@ -1,6 +1,6 @@
-import { TEMPLATES_PATH } from '@/config/constant/path'
-import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter'
-import { registerAs } from '@nestjs/config'
+import {TEMPLATES_PATH} from '@/config/constant/path'
+import {PugAdapter} from '@nestjs-modules/mailer/dist/adapters/pug.adapter'
+import {registerAs} from '@nestjs/config'
 
 // @nestjs-modules/mailer 使用文章 https://juejin.cn/post/6941340028849094670
 // 需要开启 SMTP 服务

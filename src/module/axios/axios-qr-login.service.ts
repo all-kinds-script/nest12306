@@ -2,17 +2,19 @@ import { HttpService } from '@nestjs/axios'
 import { Injectable } from '@nestjs/common'
 import { mkdirSync, statSync, writeFileSync } from 'fs'
 import { PUBLIC_PATH } from '@/config/constant/path'
-import { nanoid } from 'nanoid'
-import { Observable } from 'rxjs'
+import { firstValueFrom } from 'rxjs'
 import { VStringObject } from '@/typings/common'
+import * as dayjs from 'dayjs'
+import { normalize } from 'path'
+import { URLSearchParams } from 'url'
 
 @Injectable()
 export default class AxiosQrLoginService {
     constructor(private readonly axios: HttpService) {}
 
-    authQrCheck(RAIL_DEVICEID, RAIL_EXPIRATION, uuid): Observable<any> {
-        return new Observable((observer) => {
-            const rx = this.axios.get('/passport/web/checkqr', {
+    async authQrCheck(RAIL_DEVICEID, RAIL_EXPIRATION, uuid): Promise<any> {
+        const res = await firstValueFrom(
+            this.axios.get('/passport/web/checkqr', {
                 params: {
                     RAIL_DEVICEID,
                     RAIL_EXPIRATION,
@@ -20,71 +22,48 @@ export default class AxiosQrLoginService {
                     appid: 'otn',
                 },
             })
+        )
 
-            rx.subscribe({
-                next: (res) => {
-                    observer.next(res.data)
-                },
-                error: (err) => {
-                    observer.error(err)
-                },
-            })
-        })
+        return res.data
     }
 
-    downloadQrToDir(): Observable<VStringObject> {
-        return new Observable((observer) => {
-            const rx = this.axios.get('/passport/web/create-qr64', {
+    async downloadQrToDir(): Promise<VStringObject | null> {
+        const res = await firstValueFrom(
+            this.axios.get('/passport/web/create-qr64', {
                 params: {
                     appid: 'otn',
                 },
             })
+        )
 
-            rx.subscribe({
-                next: (res) => {
-                    const data = res.data
-                    if (res.data.result_code === '0') {
-                        const base64Qr = data.image
+        const data = res.data
+        if (res.data.result_code === '0') {
+            const base64Qr = data.image
 
-                        const QRDir = `${PUBLIC_PATH}/QRCode`
+            const QRDir = `${PUBLIC_PATH}/QRCode`
 
-                        // 判断是否有路径
-                        const stat = statSync(QRDir, { throwIfNoEntry: false })
-                        if (!stat) mkdirSync(QRDir, { recursive: true })
+            // 判断是否有路径
+            const stat = statSync(QRDir, { throwIfNoEntry: false })
+            if (!stat) mkdirSync(QRDir, { recursive: true })
 
-                        const id = nanoid()
-                        const filePath = `${QRDir}/${id}.png`
+            // 文件时间不能为: 否则无法写入
+            const id = `${dayjs(Date.now()).format('HH点mm分ss秒_YYYY年MM月DD日')}`
+            const filePath = normalize(`${QRDir}/${id}.png`)
 
-                        writeFileSync(filePath, base64Qr, 'base64')
+            try {
+                writeFileSync(filePath, base64Qr, 'base64')
+            } catch (e) {
+                console.log(e)
+            }
 
-                        observer.next({ filePath, uuid: data.uuid })
-                    }
-                },
-                error: (err) => {
-                    observer.error(err)
-                },
-            })
-        })
+            return { filePath, uuid: data.uuid }
+        }
     }
 
-    userLogin() {
-        return new Observable((observer) => {
-            const rx = this.axios.get('/otn/login/userLogin', {})
-
-            rx.subscribe({
-                next: (res) => {
-                    observer.next(res.data)
-                },
-                error: (err) => {
-                    observer.error(err)
-                },
-            })
-        })
-    }
-
-    authUamtk() {
-        return new Observable((observer) => {
-            const rx = this.axios.get('/otn/login/userLogin', {
+    // 检查用户是否登录 并获取 tk 用于 authUamauthclient
+    async authUamtk(): Promise<any> {
+        const res = await firstValueFrom(
+            this.axios.get('/passport/web/auth/uamtk', {
                 params: {
                     appid: 'otn',
                 },
@@ -94,56 +73,44 @@ export default class AxiosQrLoginService {
                 },
                 maxRedirects: 0,
             })
+        )
 
-            rx.subscribe({
-                next: (res) => {
-                    observer.next(res.data.newapptk)
-                },
-                error: (err) => {
-                    observer.error(err)
-                },
-            })
-        })
+        return res.data.newapptk
     }
 
-    authUamauthclient(new_tk) {
-        return new Observable((observer) => {
-            const rx = this.axios.get('/otn/uamauthclient', {
-                params: {
-                    tk: new_tk,
-                },
+    // 获取用户名
+    async authUamauthclient(new_tk): Promise<any> {
+        const wwwFormUrlencoded = new URLSearchParams({ tk: new_tk })
+
+        const res = await firstValueFrom(
+            this.axios.post('/otn/uamauthclient', wwwFormUrlencoded, {
                 headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
                     Referer: 'https://kyfw.12306.cn/otn/passport?redirect=/otn/login/userLogin',
                     Origin: 'https://kyfw.12306.cn',
                 },
                 maxRedirects: 0,
             })
+        )
 
-            rx.subscribe({
-                next: (res) => {
-                    observer.next(res.data.username)
-                },
-                error: (err) => {
-                    observer.error(err)
-                },
-            })
-        })
+        return res.data.username
     }
 
-    userInfo() {
-        return new Observable((observer) => {
-            const rx = this.axios.get('/otn/modifyUser/initQueryUserInfoApi', {
+    async userLogin(): Promise<VStringObject> {
+        const res = await firstValueFrom(
+            this.axios.get('/otn/login/userLogin', {
                 maxRedirects: 0,
             })
+        )
+        return res.data
+    }
 
-            rx.subscribe({
-                next: (res) => {
-                    observer.next(res.data['data.userDTO.loginUserDTO'])
-                },
-                error: (err) => {
-                    observer.error(err)
-                },
+    async userInfo(): Promise<any> {
+        const res = await firstValueFrom(
+            this.axios.get('/otn/modifyUser/initQueryUserInfoApi', {
+                maxRedirects: 0,
             })
-        })
+        )
+        return res.data['data.userDTO.loginUserDTO']
     }
 }

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { MsConfigService } from '@/module/config/ms-config.service'
-import { catchError, concatMap, EMPTY, interval, of, take, zip } from 'rxjs'
 import { EmailService } from '@/module/email/email.service'
 import AxiosQueryService from '@/module/axios/axios-query.service'
 import AxiosCommonService from '@/module/axios/axios-common.service'
 import QuerySeat from '@/module/query/enum/query-seat'
 import QueryTicket from '@/module/query/enum/query-ticket'
+import { clearInterval } from 'timers'
 
 @Injectable()
 export class QueryService {
@@ -18,15 +18,19 @@ export class QueryService {
         private readonly msConfigService: MsConfigService,
         private readonly emailService: EmailService
     ) {
-        this.axiosCommonService.refreshCookie()
-        this.initType()
+        this.init()
+    }
+
+    async init() {
+        await this.axiosCommonService.refreshCookie()
+        await this.initType()
         this.initQueryTicketTask()
         // this.startQueryTicket()
     }
 
     // 设置查票类型
-    initType() {
-        this.axiosQueryService.initTicketsType().subscribe((value) => (this.ticketsType = value))
+    async initType() {
+        this.ticketsType = await this.axiosQueryService.initTicketsType()
     }
 
     public initQueryTicketTask() {
@@ -43,20 +47,17 @@ export class QueryService {
     }
 
     public startQueryTicket() {
-        const rx = interval(1000).pipe(
-            take(4 || this.task.length),
-            catchError(() => EMPTY),
-            concatMap((index) => {
-                const task = this.task[index]
-                const { start_time, from, to } = task
+        const taskLength = this.task.length
+        let index = 0
 
-                return zip(this.axiosQueryService.queryTickets(this.ticketsType, start_time, from, to), of(task))
-            })
-        )
+        const time = setInterval(async () => {
+            if (index === taskLength) clearInterval(time)
 
-        rx.subscribe({
-            next: ([res, task]) => {
-                const { seats, train_code } = task
+            const task = this.task[index]
+            const { start_time, from, to, seats, train_code } = task
+
+            try {
+                const res = await this.axiosQueryService.queryTickets(this.ticketsType, start_time, from, to)
 
                 for (const result of res.data.data.result) {
                     const ticket = result.split('|')
@@ -89,7 +90,10 @@ export class QueryService {
                         }
                     })
                 }
-            },
-        })
+            } catch (e) {
+            } finally {
+                index++
+            }
+        }, 2000)
     }
 }

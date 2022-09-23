@@ -11,7 +11,7 @@ export default class ScheduleQueryService {
         @Inject(WINSTON_MODULE_PROVIDER)
         private readonly logger: Logger
     ) {
-        this.logger.info(`我是日志`)
+        // this.logger.info(`我是日志`)
     }
 
     public queryTicket(name: string, seconds: number, tick: CronCommand) {

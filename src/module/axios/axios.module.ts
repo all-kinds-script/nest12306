@@ -17,6 +17,13 @@ import AxiosQueryService from '@/module/axios/axios-query.service'
         }),
     ],
     providers: [CdnConfigService, AxiosCdnService, AxiosQrLoginService, AxiosCommonService, AxiosQueryService],
-    exports: [AxiosCdnService, CdnConfigService, AxiosQrLoginService, AxiosQueryService, AxiosCommonService],
+    exports: [
+        AxiosCdnService,
+        CdnConfigService,
+        AxiosQrLoginService,
+        AxiosQueryService,
+        AxiosCommonService,
+        HttpModule,
+    ],
 })
 export class AxiosModule {}

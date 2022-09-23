@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Observable } from 'rxjs'
+import { firstValueFrom } from 'rxjs'
 import { HttpService } from '@nestjs/axios'
 
 @Injectable()
@@ -7,51 +7,36 @@ export default class AxiosQueryService {
     constructor(private readonly axios: HttpService) {}
 
     // 获取查票的类型
-    initTicketsType(): Observable<string> {
-        const rx = this.axios.get('/otn/leftTicket/init', {
-            headers: {},
-        })
-
-        return new Observable((observer) => {
-            rx.subscribe({
-                next(res) {
-                    const reg = /var CLeftTicketUrl = '(.*?)';/gims
-                    const match = res.data.matchAll(reg)
-
-                    let apiType
-                    for (const item of match) apiType = item[1]
-
-                    observer.next(apiType)
-                },
-                error(err) {
-                    console.log(err)
-                },
+    async initTicketsType(): Promise<string> {
+        const res = await firstValueFrom(
+            this.axios.get('/otn/leftTicket/init', {
+                headers: {},
             })
-        })
+        )
+
+        const reg = /var CLeftTicketUrl = '(.*?)';/gims
+        const match = res.data.matchAll(reg)
+
+        let apiType
+        for (const item of match) apiType = item[1]
+
+        return apiType
     }
 
     // 查票
-    queryTickets(type: string, leftDate: string, fromStation: string, arriveStation: string): Observable<any> {
+    async queryTickets(type: string, leftDate: string, fromStation: string, arriveStation: string): Promise<any> {
         // queryX queryZ
-        const rx = this.axios.get(`/otn/${type}`, {
-            params: {
-                'leftTicketDTO.train_date': leftDate,
-                'leftTicketDTO.from_station': fromStation,
-                'leftTicketDTO.to_station': arriveStation,
-                purpose_codes: 'ADULT',
-            },
-            maxRedirects: 0,
-        })
 
-        return new Observable((observer) => {
-            rx.subscribe({
-                next(res) {
-                    observer.next(res)
+        return await firstValueFrom(
+            this.axios.get(`/otn/${type}`, {
+                params: {
+                    'leftTicketDTO.train_date': leftDate,
+                    'leftTicketDTO.from_station': fromStation,
+                    'leftTicketDTO.to_station': arriveStation,
+                    purpose_codes: 'ADULT',
                 },
-                error(err) {
-                    console.log(err.data)
-                },
+                maxRedirects: 0,
             })
-        })
+        )
     }
 }
