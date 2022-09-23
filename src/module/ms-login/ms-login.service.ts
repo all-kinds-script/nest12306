@@ -1,7 +1,6 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common'
 import AxiosQrLoginService from '@/module/axios/axios-qr-login.service'
 import AxiosCommonService from '@/module/axios/axios-common.service'
-import { concatMap, of } from 'rxjs'
 import { zip } from 'rxjs'
 import { unlinkSync } from 'fs'
 import { Cache } from 'cache-manager'

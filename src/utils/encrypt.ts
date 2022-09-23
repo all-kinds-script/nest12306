@@ -1,4 +1,5 @@
 import * as crypto from 'crypto'
+
 // 加密解密工具
 
 /**

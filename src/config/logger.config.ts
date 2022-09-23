@@ -4,9 +4,9 @@
 // 字体背景颜色：black,red,green,yellow,blue, magenta,cyan,white,gray,grey
 // 背景颜色：blackBG,redBG,greenBG,yellowBG,blueBG,magentaBG,cyanBG,whiteBG
 
-import { LOG_COLOR, LOG_FLAG, LOG_LEVEL, LOG_LEVELS_CONFIG, LOG_OUT_DIR } from '@/config/constant/log'
-import { registerAs } from '@nestjs/config'
-import { addColors, format, transports } from 'winston'
+import {LOG_COLOR, LOG_FLAG, LOG_LEVEL, LOG_LEVELS_CONFIG, LOG_OUT_DIR} from '@/config/constant/log'
+import {registerAs} from '@nestjs/config'
+import {addColors, format, transports} from 'winston'
 import 'winston-daily-rotate-file'
 
 addColors(LOG_COLOR)

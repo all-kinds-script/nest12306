@@ -1,8 +1,7 @@
-import CustomExceptionError from '@/common/filter/exception.custom'
 // import { AuthService } from '@/module/auth/auth.service'
-import { Injectable } from '@nestjs/common'
-import { PassportStrategy } from '@nestjs/passport'
-import { Strategy } from 'passport-local'
+import {Injectable} from '@nestjs/common'
+import {PassportStrategy} from '@nestjs/passport'
+import {Strategy} from 'passport-local'
 
 // 校验 账号密码是否和本地的 一致
 @Injectable()

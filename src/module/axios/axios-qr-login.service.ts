@@ -1,11 +1,10 @@
 import { HttpService } from '@nestjs/axios'
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { mkdirSync, statSync, writeFileSync } from 'fs'
 import { PUBLIC_PATH } from '@/config/constant/path'
 import { nanoid } from 'nanoid'
 import { Observable } from 'rxjs'
 import { VStringObject } from '@/typings/common'
-import { Cache } from 'cache-manager'
 
 @Injectable()
 export default class AxiosQrLoginService {
