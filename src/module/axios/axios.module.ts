@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common'
-import { AxiosService } from './axios.service'
 import { HttpModule } from '@nestjs/axios'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 
@@ -17,21 +16,7 @@ import AxiosQueryService from '@/module/axios/axios-query.service'
             useFactory: (config: ConfigService) => config.get('axios'),
         }),
     ],
-    providers: [
-        AxiosService,
-        CdnConfigService,
-        AxiosCdnService,
-        AxiosQrLoginService,
-        AxiosCommonService,
-        AxiosQueryService,
-    ],
-    exports: [
-        AxiosService,
-        AxiosCdnService,
-        CdnConfigService,
-        AxiosQrLoginService,
-        AxiosQueryService,
-        AxiosCommonService,
-    ],
+    providers: [CdnConfigService, AxiosCdnService, AxiosQrLoginService, AxiosCommonService, AxiosQueryService],
+    exports: [AxiosCdnService, CdnConfigService, AxiosQrLoginService, AxiosQueryService, AxiosCommonService],
 })
 export class AxiosModule {}
