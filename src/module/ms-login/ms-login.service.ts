@@ -38,12 +38,10 @@ export class MsLoginService {
 
                 // await this.axiosQrLoginService.userLogin()
                 const new_tk = await this.axiosQrLoginService.authUamtk()
-                console.log(new_tk, 'tk')
                 const user_name = await this.axiosQrLoginService.authUamauthclient(new_tk)
-                console.log(user_name, 'name')
 
                 // await this.axiosQrLoginService.userLogin()
-                // await this.axiosQrLoginService.userInfo()
+                await this.axiosQrLoginService.userInfo()
             }
         }, 1500)
     }

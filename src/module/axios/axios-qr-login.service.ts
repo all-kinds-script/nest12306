@@ -99,7 +99,7 @@ export default class AxiosQrLoginService {
     async userLogin(): Promise<VStringObject> {
         const res = await firstValueFrom(
             this.axios.get('/otn/login/userLogin', {
-                maxRedirects: 0,
+                maxRedirects: 5,
             })
         )
         return res.data

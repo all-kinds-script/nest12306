@@ -7,6 +7,7 @@ import { CdnConfigService } from '@/module/config/cdn-config.service'
 import AxiosQrLoginService from '@/module/axios/axios-qr-login.service'
 import AxiosCommonService from '@/module/axios/axios-common.service'
 import AxiosQueryService from '@/module/axios/axios-query.service'
+import AxiosMsUser from '@/module/axios/axios-ms-user'
 
 @Module({
     imports: [
@@ -16,7 +17,14 @@ import AxiosQueryService from '@/module/axios/axios-query.service'
             useFactory: (config: ConfigService) => config.get('axios'),
         }),
     ],
-    providers: [CdnConfigService, AxiosCdnService, AxiosQrLoginService, AxiosCommonService, AxiosQueryService],
+    providers: [
+        CdnConfigService,
+        AxiosCdnService,
+        AxiosQrLoginService,
+        AxiosCommonService,
+        AxiosQueryService,
+        AxiosMsUser,
+    ],
     exports: [
         AxiosCdnService,
         CdnConfigService,

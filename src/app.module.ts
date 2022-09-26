@@ -19,6 +19,8 @@ import { MsConfigModule } from './module/config/ms-config.module'
 import { AxiosModule } from './module/axios/axios.module'
 import { EmailModule } from './module/email/email.module'
 import { MsLoginModule } from './module/ms-login/ms-login.module'
+import { OrderModule } from './module/order/order.module';
+import { MsUserModule } from './module/ms-user/ms-user.module';
 import cacheConfig from '@/config/cache.config'
 
 // https://docs.nestjs.com/fundamentals/dynamic-modules#community-guidelines 动态模块
@@ -108,6 +110,8 @@ import cacheConfig from '@/config/cache.config'
         AxiosModule,
         EmailModule,
         MsLoginModule,
+        OrderModule,
+        MsUserModule,
 
         // 路由器模块
         // RouterModule.register([

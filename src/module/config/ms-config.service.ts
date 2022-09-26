@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { StationsConfigService } from '@/module/config/stations-config.service'
 import QuerySeat from '@/module/query/enum/query-seat'
-import OrderSeat from '@/enum/order-seat'
+import OrderSeat from '@/module/order/enum/order-seat'
 import * as dayjs from 'dayjs'
 
 @Injectable()
