@@ -14,7 +14,7 @@ export class MsLoginService {
         @Inject(CACHE_MANAGER) private cacheManage: Cache,
         private readonly axios: HttpService
     ) {
-        // this.qrLogin()
+        this.qrLogin()
     }
 
     async qrLogin() {

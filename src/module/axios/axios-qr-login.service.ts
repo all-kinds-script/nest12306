@@ -108,9 +108,10 @@ export default class AxiosQrLoginService {
     async userInfo(): Promise<any> {
         const res = await firstValueFrom(
             this.axios.get('/otn/modifyUser/initQueryUserInfoApi', {
-                maxRedirects: 0,
+                maxRedirects: 5,
             })
         )
+        console.log(res, 1)
         return res.data['data.userDTO.loginUserDTO']
     }
 }
