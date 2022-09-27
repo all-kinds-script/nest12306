@@ -31,9 +31,6 @@ export class AxiosInterceptorService {
         if (setCookie) {
             setCookie.forEach((cookie) => {
                 const [key, value] = cookie.split(';')[0].split('=')
-                if (key === 'uKey') {
-                    console.log(response.request)
-                }
 
                 this.axiosCookieService.setCookie({ key, value })
                 console.log(this.axiosCookieService.cookie)

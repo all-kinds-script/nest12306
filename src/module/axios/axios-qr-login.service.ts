@@ -123,7 +123,6 @@ export default class AxiosQrLoginService {
             })
         )
 
-        console.log(res.data, 111111)
         return res.data['data.userDTO.loginUserDTO']
     }
 }
