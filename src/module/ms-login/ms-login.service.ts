@@ -6,14 +6,14 @@ import { Cache } from 'cache-manager'
 import { clearInterval } from 'timers'
 import { HttpService } from '@nestjs/axios'
 import * as cookie from 'cookie'
-import { AxiosService } from '@/module/axios/axios.service'
+import { AxiosCookieService } from '@/module/axios/axios-cookie.service'
 
 @Injectable()
 export class MsLoginService {
     constructor(
         private readonly axiosQrLoginService: AxiosQrLoginService,
         private readonly axiosCommonService: AxiosCommonService,
-        private readonly axiosService: AxiosService,
+        private readonly axiosService: AxiosCookieService,
         private readonly axios: HttpService
     ) {
         // this.qrLogin()

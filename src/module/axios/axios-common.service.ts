@@ -2,11 +2,11 @@ import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs'
 import { Buffer } from 'buffer'
 import { HttpService } from '@nestjs/axios'
-import { AxiosService } from '@/module/axios/axios.service'
+import { AxiosCookieService } from '@/module/axios/axios-cookie.service'
 
 @Injectable()
 export default class AxiosCommonService {
-    constructor(private readonly axios: HttpService, private readonly axiosService: AxiosService) {}
+    constructor(private readonly axios: HttpService, private readonly axiosService: AxiosCookieService) {}
 
     // 根据浏览器标识 获取 到期时间 设备ID 字段头信息 转为 cookie 信息
     async refreshCookie(): Promise<any> {

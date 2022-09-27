@@ -5,7 +5,7 @@ import { Cache } from 'cache-manager'
 import { GenericsObject } from '@/typings/common'
 
 @Injectable()
-export class AxiosService {
+export class AxiosCookieService {
     private readonly axiosRef: AxiosInstance
     private cookies: GenericsObject<string> = {}
 

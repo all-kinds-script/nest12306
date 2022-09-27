@@ -4,7 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 
 import { AxiosCdnService } from '@/module/axios/axios-cdn.service'
 import { CdnConfigService } from '@/module/config/cdn-config.service'
-import { AxiosService } from './axios.service'
+import { AxiosCookieService } from './axios-cookie.service'
 import AxiosQrLoginService from '@/module/axios/axios-qr-login.service'
 import AxiosCommonService from '@/module/axios/axios-common.service'
 import AxiosQueryService from '@/module/axios/axios-query.service'
@@ -25,7 +25,7 @@ import AxiosMsUser from '@/module/axios/axios-ms-user'
         AxiosCommonService,
         AxiosQueryService,
         AxiosMsUser,
-        AxiosService,
+        AxiosCookieService,
     ],
     exports: [
         AxiosCdnService,
@@ -34,7 +34,7 @@ import AxiosMsUser from '@/module/axios/axios-ms-user'
         AxiosQueryService,
         AxiosCommonService,
         HttpModule,
-        AxiosService,
+        AxiosCookieService,
     ],
 })
 export class AxiosModule {}
