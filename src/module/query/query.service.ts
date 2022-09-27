@@ -18,7 +18,7 @@ export class QueryService {
         private readonly msConfigService: MsConfigService,
         private readonly emailService: EmailService
     ) {
-        this.init()
+        // this.init()
     }
 
     async init() {

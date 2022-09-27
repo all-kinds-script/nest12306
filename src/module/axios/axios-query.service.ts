@@ -6,7 +6,7 @@ import { HttpService } from '@nestjs/axios'
 export default class AxiosQueryService {
     constructor(private readonly axios: HttpService) {}
 
-    // 获取查票的类型
+    // 获取查票的类型 及 获取用户信息时候需要调用一次获取 Ukey 头才能获取用户信息
     async initTicketsType(): Promise<string> {
         const res = await firstValueFrom(
             this.axios.get('/otn/leftTicket/init', {

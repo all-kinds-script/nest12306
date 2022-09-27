@@ -9,6 +9,7 @@ import AxiosQrLoginService from '@/module/axios/axios-qr-login.service'
 import AxiosCommonService from '@/module/axios/axios-common.service'
 import AxiosQueryService from '@/module/axios/axios-query.service'
 import AxiosMsUser from '@/module/axios/axios-ms-user'
+import { AxiosInterceptorService } from '@/module/axios/axios-interceptor.service'
 
 @Module({
     imports: [
@@ -19,13 +20,14 @@ import AxiosMsUser from '@/module/axios/axios-ms-user'
         }),
     ],
     providers: [
+        AxiosCookieService,
         CdnConfigService,
         AxiosCdnService,
         AxiosQrLoginService,
         AxiosCommonService,
         AxiosQueryService,
         AxiosMsUser,
-        AxiosCookieService,
+        AxiosInterceptorService,
     ],
     exports: [
         AxiosCdnService,
@@ -35,6 +37,7 @@ import AxiosMsUser from '@/module/axios/axios-ms-user'
         AxiosCommonService,
         HttpModule,
         AxiosCookieService,
+        AxiosInterceptorService,
     ],
 })
 export class AxiosModule {}

@@ -1,12 +1,12 @@
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import AxiosQrLoginService from '@/module/axios/axios-qr-login.service'
 import AxiosCommonService from '@/module/axios/axios-common.service'
-import { unlinkSync } from 'fs'
-import { Cache } from 'cache-manager'
+import { readFileSync, unlinkSync } from 'fs'
 import { clearInterval } from 'timers'
 import { HttpService } from '@nestjs/axios'
-import * as cookie from 'cookie'
 import { AxiosCookieService } from '@/module/axios/axios-cookie.service'
+import * as qrcode from 'qrcode'
+import AxiosQueryService from '@/module/axios/axios-query.service'
 
 @Injectable()
 export class MsLoginService {
@@ -14,11 +14,17 @@ export class MsLoginService {
         private readonly axiosQrLoginService: AxiosQrLoginService,
         private readonly axiosCommonService: AxiosCommonService,
         private readonly axiosService: AxiosCookieService,
-        private readonly axios: HttpService
-    ) {
-        // this.qrLogin()
+        private readonly axios: HttpService,
+        private readonly axiosQueryService: AxiosQueryService
+    ) {}
+
+    async test() {
+        const new_tk = await this.axiosQrLoginService.authUamtk()
+        const user_name = await this.axiosQrLoginService.authUamauthclient(new_tk)
+        await this.axiosQrLoginService.userInfo()
     }
 
+    // 所需 cookie
     // <Cookie BIGipServerotn=418382346.50210.0000 for kyfw.12306.cn/>,
     // <Cookie BIGipServerpool_passport=132383242.50215.0000 for kyfw.12306.cn/>,
     // <Cookie route=c5c62a339e7744272a54643b3be5bf64 for kyfw.12306.cn/>,
@@ -42,16 +48,16 @@ export class MsLoginService {
                 console.log('请确认登录')
             } else if (data.result_code === '3') {
                 unlinkSync(filePath)
+                clearInterval(time)
+                console.log('已经超时')
             } else if (data.result_code === '2') {
                 clearInterval(time)
 
-                this.axiosService.cookieHeader({ key: 'uamtk', value: data.uamtk })
+                this.axiosService.setCookie({ key: 'uamtk', value: data.uamtk })
 
-                // await this.axiosQrLoginService.userLogin()
                 const new_tk = await this.axiosQrLoginService.authUamtk()
                 const user_name = await this.axiosQrLoginService.authUamauthclient(new_tk)
-
-                // await this.axiosQrLoginService.userLogin()
+                await this.axiosQueryService.initTicketsType()
                 await this.axiosQrLoginService.userInfo()
             }
         }, 1500)

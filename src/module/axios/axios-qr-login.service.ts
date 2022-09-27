@@ -1,16 +1,17 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable } from '@nestjs/common'
-import { mkdirSync, statSync, writeFileSync } from 'fs'
+import { createWriteStream, mkdirSync, statSync, writeFileSync } from 'fs'
 import { PUBLIC_PATH } from '@/config/constant/path'
 import { firstValueFrom } from 'rxjs'
 import { GenericsObject } from '@/typings/common'
 import * as dayjs from 'dayjs'
 import { normalize } from 'path'
 import { URLSearchParams } from 'url'
+import { AxiosCookieService } from '@/module/axios/axios-cookie.service'
 
 @Injectable()
 export default class AxiosQrLoginService {
-    constructor(private readonly axios: HttpService) {}
+    constructor(private readonly axios: HttpService, private readonly axiosCookieService: AxiosCookieService) {}
 
     async authQrCheck(RAIL_DEVICEID, RAIL_EXPIRATION, uuid): Promise<any> {
         const res = await firstValueFrom(
@@ -38,7 +39,7 @@ export default class AxiosQrLoginService {
 
         const data = res.data
         if (res.data.result_code === '0') {
-            const base64Qr = data.image
+            const base64QrImage = data.image
 
             const QRDir = `${PUBLIC_PATH}/QRCode`
 
@@ -51,7 +52,7 @@ export default class AxiosQrLoginService {
             const filePath = normalize(`${QRDir}/${id}.png`)
 
             try {
-                writeFileSync(filePath, base64Qr, 'base64')
+                writeFileSync(filePath, base64QrImage, 'base64')
             } catch (e) {
                 console.log(e)
             }
@@ -60,6 +61,10 @@ export default class AxiosQrLoginService {
         }
     }
 
+    // cookie
+    // '_passport_session=c16d2e2e821345e0924712eadac3ad2b5175; Path=/passport',
+    // 'uamtk=VdLWZbZu8Xln3bX-uCxqzC5CAAfHZ-62WftGx2XByQcmkd1d0; Path=/passport',
+    // 'BIGipServerpool_passport=216269322.50215.0000; path=/'
     // 检查用户是否登录 并获取 tk 用于 authUamauthclient
     async authUamtk(): Promise<any> {
         const res = await firstValueFrom(
@@ -78,6 +83,11 @@ export default class AxiosQrLoginService {
         return res.data.newapptk
     }
 
+    // cookie
+    // 'route=9036359bb8a8a461c164a04f8f50b252; Path=/',
+    // 'JSESSIONID=5D98D625C506B9C09FD94885C32C0C80; Path=/otn',
+    // 'tk=c1hvgUbIakgctGS39rircNjzWIiomodWAfdC6jQtNPcpld1d0; Path=/otn',
+    // 'BIGipServerotn=49283594.50210.0000; path=/'
     // 获取用户名
     async authUamauthclient(new_tk): Promise<any> {
         const wwwFormUrlencoded = new URLSearchParams({ tk: new_tk })
@@ -109,9 +119,11 @@ export default class AxiosQrLoginService {
     async userInfo(): Promise<any> {
         const res = await firstValueFrom(
             this.axios.get('/otn/modifyUser/initQueryUserInfoApi', {
-                maxRedirects: 5,
+                maxRedirects: 0,
             })
         )
+
+        console.log(res.data, 111111)
         return res.data['data.userDTO.loginUserDTO']
     }
 }

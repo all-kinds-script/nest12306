@@ -1,4 +1,4 @@
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs'
 import { Buffer } from 'buffer'
 import { HttpService } from '@nestjs/axios'
@@ -41,12 +41,12 @@ export default class AxiosCommonService {
 
         const data = res.data
 
-        if (data.indexOf('callbackFunction') >= 0) {
+        if (data.startsWith('callbackFunction')) {
             const json = data.substring(18, data.length - 2)
             const object = JSON.parse(json)
 
-            this.axiosService.cookieHeader({ key: 'RAIL_EXPIRATION', value: object['exp'] })
-            this.axiosService.cookieHeader({ key: 'RAIL_DEVICEID', value: object['dfp'] })
+            this.axiosService.setCookie({ key: 'RAIL_EXPIRATION', value: object['exp'] })
+            this.axiosService.setCookie({ key: 'RAIL_DEVICEID', value: object['dfp'] })
 
             return this.axiosService.cookie
         }

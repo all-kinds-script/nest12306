@@ -34,6 +34,7 @@ const winstonConfig = registerAs('winston', () => ({
     levels: LOG_LEVELS_CONFIG,
     silent: LOG_FLAG, // 是否禁用所有日志
     format: customFormat,
+    exitOnError: false, // 是否在错误时退出
     transports: [
         // 自定义控制台信息
         new transports.Console({
@@ -42,7 +43,8 @@ const winstonConfig = registerAs('winston', () => ({
                 format.colorize(), // 开启控制台颜色展示
                 format.printf((info) => `[${info.level}] \r\n时间：${[info['timestamp']]}\r\n载体:${info.message}`)
             ),
-            // level: 'warn',
+            handleExceptions: true,
+            // handleRejections
         }),
         // 自定义文件输出配置
         new transports.DailyRotateFile({
@@ -55,11 +57,13 @@ const winstonConfig = registerAs('winston', () => ({
         new transports.DailyRotateFile({
             filename: `${LOG_OUT_DIR}/err/%DATE%.log`,
             level: 'error',
+            handleExceptions: true,
+            // handleRejections
             ...defaultOptions,
         }),
     ],
     // exitOnError:false //异常时候是否退出 false 退出 默认为 true
-    exceptionHandlers: [new transports.File({ filename: `${LOG_OUT_DIR}/other/exceptions.log` })],
+    // exceptionHandlers: [new transports.File({ filename: `${LOG_OUT_DIR}/other/exceptions.log` })],
     // rejectionHandlers: [new transports.File({ filename: 'logs/other/reject.log' })], //处理未经批准的拒绝承诺,
 }))
 
