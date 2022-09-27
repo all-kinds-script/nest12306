@@ -9,6 +9,7 @@ import { normalize } from 'path'
 import { URLSearchParams } from 'url'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
+import { decodeQr, encodeQrTerminal } from '@/utils/qrcode'
 
 @Injectable()
 export default class AxiosQrLoginService {
@@ -44,7 +45,7 @@ export default class AxiosQrLoginService {
 
         const data = res.data
         if (res.data.result_code === '0') {
-            const base64QrImage = data.image
+            const base64QrImage: string = data.image
 
             const QRDir = `${PUBLIC_PATH}/QRCode`
 
@@ -61,6 +62,9 @@ export default class AxiosQrLoginService {
             } catch (e) {
                 this.logger.error(e)
             }
+
+            const decode = await decodeQr({ data: base64QrImage })
+            await encodeQrTerminal(decode)
 
             return { filePath, uuid: data.uuid }
         }
@@ -95,6 +99,7 @@ export default class AxiosQrLoginService {
     // 'BIGipServerotn=49283594.50210.0000; path=/'
     // 获取用户名
     async authUamauthclient(new_tk): Promise<any> {
+        // 可以不写，axios 如果请求头是 application/x-www-form-urlencoded 自动将数据转换为 URLSearchParams 包裹
         const wwwFormUrlencoded = new URLSearchParams({ tk: new_tk })
 
         const res = await firstValueFrom(
