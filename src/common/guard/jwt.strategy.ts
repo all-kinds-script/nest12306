@@ -1,7 +1,7 @@
-import { JWT_SECRET } from "@/config/constant/jwt";
-import { Injectable } from "@nestjs/common";
-import { PassportStrategy } from "@nestjs/passport";
-import { ExtractJwt, Strategy } from "passport-jwt";
+import { JWT_SECRET } from '@/config/constant/jwt'
+import { Injectable } from '@nestjs/common'
+import { PassportStrategy } from '@nestjs/passport'
+import { ExtractJwt, Strategy } from 'passport-jwt'
 
 // jwt 策略，
 @Injectable()

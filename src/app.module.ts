@@ -1,27 +1,27 @@
-import { CacheInterceptor, CacheModule, MiddlewareConsumer, Module } from "@nestjs/common";
-import { AppController } from "./app.controller";
-import * as Joi from "joi";
-import { APP_INTERCEPTOR } from "@nestjs/core";
-import { JwtMiddleware } from "@/common/middleware/jwt.middleware";
-import allConfig, { eventConfig } from "./config/index.config";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { ScheduleModule } from "@nestjs/schedule";
-import { WinstonModule } from "nest-winston";
-import VIRTUAL_PATH from "@/config/constant/router-path.enum";
-import { MailerModule } from "@nestjs-modules/mailer";
-import { CLIENT_PATH } from "@/config/constant/path";
-import { BullModule } from "@nestjs/bull";
-import { EventEmitterModule } from "@nestjs/event-emitter";
-import { ServeStaticModule } from "@nestjs/serve-static";
-import { Ms12306Module } from "./module/ms12306/ms12306.module";
-import { QueryModule } from "./module/query/query.module";
-import { MsConfigModule } from "./module/config/ms-config.module";
-import { AxiosModule } from "./module/axios/axios.module";
-import { EmailModule } from "./module/email/email.module";
-import { MsLoginModule } from "./module/ms-login/ms-login.module";
-import { OrderModule } from "./module/order/order.module";
-import { MsUserModule } from "./module/ms-user/ms-user.module";
-import cacheConfig from "@/config/cache.config";
+import { CacheInterceptor, CacheModule, MiddlewareConsumer, Module } from '@nestjs/common'
+import { AppController } from './app.controller'
+import * as Joi from 'joi'
+import { APP_INTERCEPTOR } from '@nestjs/core'
+import { JwtMiddleware } from '@/common/middleware/jwt.middleware'
+import allConfig, { eventConfig } from './config/index.config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { ScheduleModule } from '@nestjs/schedule'
+import { WinstonModule } from 'nest-winston'
+import VIRTUAL_PATH from '@/config/constant/router-path.enum'
+import { MailerModule } from '@nestjs-modules/mailer'
+import { CLIENT_PATH } from '@/config/constant/path'
+import { BullModule } from '@nestjs/bull'
+import { EventEmitterModule } from '@nestjs/event-emitter'
+import { ServeStaticModule } from '@nestjs/serve-static'
+import { Ms12306Module } from './module/ms12306/ms12306.module'
+import { QueryModule } from './module/query/query.module'
+import { MsConfigModule } from './module/config/ms-config.module'
+import { AxiosModule } from './module/axios/axios.module'
+import { EmailModule } from './module/email/email.module'
+import { MsLoginModule } from './module/ms-login/ms-login.module'
+import { OrderModule } from './module/order/order.module'
+import { MsUserModule } from './module/ms-user/ms-user.module'
+import cacheConfig from '@/config/cache.config'
 
 // https://docs.nestjs.com/fundamentals/dynamic-modules#community-guidelines 动态模块
 // register，您期望使用特定配置配置动态模块，仅供调用模块使用。

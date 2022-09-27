@@ -1,7 +1,7 @@
 ///auth.local.guard.ts
-import { ExecutionContext, Injectable } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
-import { Observable } from "rxjs";
+import { ExecutionContext, Injectable } from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
+import { Observable } from 'rxjs'
 
 // 登录用户校验
 @Injectable()

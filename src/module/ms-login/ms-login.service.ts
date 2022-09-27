@@ -1,25 +1,29 @@
 import { Inject, Injectable } from '@nestjs/common'
 import AxiosQrLoginService from '@/module/axios/axios-qr-login.service'
 import AxiosCommonService from '@/module/axios/axios-common.service'
-import { unlinkSync } from 'fs'
+import { mkdirSync, statSync, unlinkSync, writeFileSync } from 'fs'
 import { clearInterval } from 'timers'
 import { HttpService } from '@nestjs/axios'
 import { AxiosCookieService } from '@/module/axios/axios-cookie.service'
 import AxiosQueryService from '@/module/axios/axios-query.service'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
+import { PUBLIC_PATH } from '@/config/constant/path'
+import { inspect } from 'util'
 
 @Injectable()
 export class MsLoginService {
     constructor(
         private readonly axiosQrLoginService: AxiosQrLoginService,
         private readonly axiosCommonService: AxiosCommonService,
-        private readonly axiosService: AxiosCookieService,
+        private readonly axiosCookieService: AxiosCookieService,
         private readonly axios: HttpService,
         private readonly axiosQueryService: AxiosQueryService,
         @Inject(WINSTON_MODULE_PROVIDER)
         private readonly logger: Logger
-    ) {}
+    ) {
+        // this.qrLogin()
+    }
 
     // 所需 cookie
     // BIGipServerotn=418382346.50210.0000
@@ -37,8 +41,8 @@ export class MsLoginService {
 
         const time = setInterval(async () => {
             const data = await this.axiosQrLoginService.authQrCheck(
-                this.axiosService.cookie.RAIL_DEVICEID,
-                this.axiosService.cookie.RAIL_EXPIRATION,
+                this.axiosCookieService.cookie.RAIL_DEVICEID,
+                this.axiosCookieService.cookie.RAIL_EXPIRATION,
                 uuid
             )
 
@@ -49,12 +53,24 @@ export class MsLoginService {
                 case '2':
                     clearInterval(time)
 
-                    this.axiosService.setCookie({ key: 'uamtk', value: data.uamtk })
+                    this.axiosCookieService.setCookie({ key: 'uamtk', value: data.uamtk })
 
                     const new_tk = await this.axiosQrLoginService.authUamtk()
                     const user_name = await this.axiosQrLoginService.authUamauthclient(new_tk)
                     await this.axiosQueryService.initTicketsType()
-                    await this.axiosQrLoginService.userInfo()
+                    const info = await this.axiosQrLoginService.userInfo()
+                    console.log(info)
+
+                    const userDir = `${PUBLIC_PATH}/user`
+                    // 判断是否有路径
+                    const stat = statSync(userDir, { throwIfNoEntry: false })
+                    if (!stat) mkdirSync(userDir, { recursive: true })
+
+                    writeFileSync(
+                        `${PUBLIC_PATH}/user/cookie.json`,
+                        JSON.stringify(this.axiosCookieService.cookie, null, '\t'),
+                        'binary'
+                    )
                     break
                 case '3':
                     unlinkSync(filePath)
