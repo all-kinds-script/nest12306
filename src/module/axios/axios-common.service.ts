@@ -2,11 +2,11 @@ import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs'
 import { Buffer } from 'buffer'
 import { HttpService } from '@nestjs/axios'
-import { Cache } from 'cache-manager'
+import { AxiosService } from '@/module/axios/axios.service'
 
 @Injectable()
 export default class AxiosCommonService {
-    constructor(private readonly axios: HttpService, @Inject(CACHE_MANAGER) private readonly cacheManage: Cache) {}
+    constructor(private readonly axios: HttpService, private readonly axiosService: AxiosService) {}
 
     // 根据浏览器标识 获取 到期时间 设备ID 字段头信息 转为 cookie 信息
     async refreshCookie(): Promise<any> {
@@ -40,19 +40,15 @@ export default class AxiosCommonService {
         )
 
         const data = res.data
+
         if (data.indexOf('callbackFunction') >= 0) {
             const json = data.substring(18, data.length - 2)
             const object = JSON.parse(json)
 
-            const RAIL_EXPIRATION = `RAIL_EXPIRATION=${object['exp']};`
-            const RAIL_DEVICEID = `RAIL_DEVICEID=${object['dfp']};`
+            this.axiosService.cookieHeader({ key: 'RAIL_EXPIRATION', value: object['exp'] })
+            this.axiosService.cookieHeader({ key: 'RAIL_DEVICEID', value: object['dfp'] })
 
-            this.axios.axiosRef.defaults.headers.common['cookie'] = `${RAIL_EXPIRATION}${RAIL_DEVICEID}`
-
-            await this.cacheManage.set('RAIL_EXPIRATION', object['exp'])
-            await this.cacheManage.set('RAIL_DEVICEID', object['dfp'])
-
-            return { RAIL_EXPIRATION, RAIL_DEVICEID }
+            return this.axiosService.cookie
         }
     }
 }

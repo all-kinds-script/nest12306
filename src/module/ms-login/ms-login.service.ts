@@ -5,26 +5,38 @@ import { unlinkSync } from 'fs'
 import { Cache } from 'cache-manager'
 import { clearInterval } from 'timers'
 import { HttpService } from '@nestjs/axios'
+import * as cookie from 'cookie'
+import { AxiosService } from '@/module/axios/axios.service'
 
 @Injectable()
 export class MsLoginService {
     constructor(
         private readonly axiosQrLoginService: AxiosQrLoginService,
         private readonly axiosCommonService: AxiosCommonService,
-        @Inject(CACHE_MANAGER) private cacheManage: Cache,
+        private readonly axiosService: AxiosService,
         private readonly axios: HttpService
     ) {
-        this.qrLogin()
+        // this.qrLogin()
     }
 
+    // <Cookie BIGipServerotn=418382346.50210.0000 for kyfw.12306.cn/>,
+    // <Cookie BIGipServerpool_passport=132383242.50215.0000 for kyfw.12306.cn/>,
+    // <Cookie route=c5c62a339e7744272a54643b3be5bf64 for kyfw.12306.cn/>,
+    // <Cookie JSESSIONID=5F74234C4122FC24FC2A0C802E66B719 for kyfw.12306.cn/otn>,
+    // <Cookie tk=aEk7vnxAmpQcqOItje-U-_LUKfc5O_n6jICxvmvQ9sQtyd1d0 for kyfw.12306.cn/otn>,
+    // <Cookie _passport_session=3c5d64a109d14247830e654cf404db861347 for kyfw.12306.cn/passport>,
+    // <Cookie uamtk=D5s-z4dCo93f4V9lxA_MI0iwehGtO6EPt6z46jND-WUxhd1d0 for kyfw.12306.cn/passport>]>
     async qrLogin() {
         await this.axiosCommonService.refreshCookie()
-        const RAIL_DEVICEID = await this.cacheManage.get('RAIL_DEVICEID')
-        const RAIL_EXPIRATION = await this.cacheManage.get('RAIL_EXPIRATION')
+
         const { uuid, filePath } = await this.axiosQrLoginService.downloadQrToDir()
 
         const time = setInterval(async () => {
-            const data = await this.axiosQrLoginService.authQrCheck(RAIL_DEVICEID, RAIL_EXPIRATION, uuid)
+            const data = await this.axiosQrLoginService.authQrCheck(
+                this.axiosService.cookie.RAIL_DEVICEID,
+                this.axiosService.cookie.RAIL_EXPIRATION,
+                uuid
+            )
 
             if (data.result_code === '1') {
                 console.log('请确认登录')
@@ -33,8 +45,7 @@ export class MsLoginService {
             } else if (data.result_code === '2') {
                 clearInterval(time)
 
-                const cookie = this.axios.axiosRef.defaults.headers.common.cookie
-                this.axios.axiosRef.defaults.headers.common.cookie = `${cookie}uamtk=${data.uamtk}`
+                this.axiosService.cookieHeader({ key: 'uamtk', value: data.uamtk })
 
                 // await this.axiosQrLoginService.userLogin()
                 const new_tk = await this.axiosQrLoginService.authUamtk()

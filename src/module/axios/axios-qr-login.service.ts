@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { mkdirSync, statSync, writeFileSync } from 'fs'
 import { PUBLIC_PATH } from '@/config/constant/path'
 import { firstValueFrom } from 'rxjs'
-import { VStringObject } from '@/typings/common'
+import { GenericsObject } from '@/typings/common'
 import * as dayjs from 'dayjs'
 import { normalize } from 'path'
 import { URLSearchParams } from 'url'
@@ -27,7 +27,7 @@ export default class AxiosQrLoginService {
         return res.data
     }
 
-    async downloadQrToDir(): Promise<VStringObject | null> {
+    async downloadQrToDir(): Promise<GenericsObject<string> | null> {
         const res = await firstValueFrom(
             this.axios.get('/passport/web/create-qr64', {
                 params: {
@@ -96,7 +96,7 @@ export default class AxiosQrLoginService {
         return res.data.username
     }
 
-    async userLogin(): Promise<VStringObject> {
+    async userLogin(): Promise<GenericsObject<string>> {
         const res = await firstValueFrom(
             this.axios.get('/otn/login/userLogin', {
                 maxRedirects: 5,
@@ -105,13 +105,13 @@ export default class AxiosQrLoginService {
         return res.data
     }
 
+    // 用户身份证相关信息
     async userInfo(): Promise<any> {
         const res = await firstValueFrom(
             this.axios.get('/otn/modifyUser/initQueryUserInfoApi', {
                 maxRedirects: 5,
             })
         )
-        console.log(res, 1)
         return res.data['data.userDTO.loginUserDTO']
     }
 }
