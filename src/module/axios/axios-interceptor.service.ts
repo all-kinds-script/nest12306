@@ -33,7 +33,6 @@ export class AxiosInterceptorService {
                 const [key, value] = cookie.split(';')[0].split('=')
 
                 this.axiosCookieService.setCookie({ key, value })
-                console.log(this.axiosCookieService.cookie)
             })
         }
 

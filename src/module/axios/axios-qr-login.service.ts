@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios'
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { createWriteStream, mkdirSync, statSync, writeFileSync } from 'fs'
 import { PUBLIC_PATH } from '@/config/constant/path'
 import { firstValueFrom } from 'rxjs'
@@ -8,10 +8,16 @@ import * as dayjs from 'dayjs'
 import { normalize } from 'path'
 import { URLSearchParams } from 'url'
 import { AxiosCookieService } from '@/module/axios/axios-cookie.service'
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
+import { Logger } from 'winston'
 
 @Injectable()
 export default class AxiosQrLoginService {
-    constructor(private readonly axios: HttpService, private readonly axiosCookieService: AxiosCookieService) {}
+    constructor(
+        private readonly axios: HttpService,
+        @Inject(WINSTON_MODULE_PROVIDER)
+        private readonly logger: Logger
+    ) {}
 
     async authQrCheck(RAIL_DEVICEID, RAIL_EXPIRATION, uuid): Promise<any> {
         const res = await firstValueFrom(
@@ -54,7 +60,7 @@ export default class AxiosQrLoginService {
             try {
                 writeFileSync(filePath, base64QrImage, 'base64')
             } catch (e) {
-                console.log(e)
+                this.logger.error(e)
             }
 
             return { filePath, uuid: data.uuid }

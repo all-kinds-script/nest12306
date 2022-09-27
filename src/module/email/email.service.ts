@@ -1,10 +1,16 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { MailerService } from '@nestjs-modules/mailer'
 import * as dayjs from 'dayjs'
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
+import { Logger } from 'winston'
 
 @Injectable()
 export class EmailService {
-    constructor(private readonly mailerService: MailerService) {}
+    constructor(
+        private readonly mailerService: MailerService,
+        @Inject(WINSTON_MODULE_PROVIDER)
+        private readonly logger: Logger
+    ) {}
 
     public async sendHaveTicket(): Promise<any> {
         const code = 666
@@ -25,7 +31,7 @@ export class EmailService {
                 // html: '<b>welcome</b>', // HTML body content
             })
         } catch (e) {
-            console.log(e)
+            this.logger.error(e, '邮件')
         }
     }
 }
