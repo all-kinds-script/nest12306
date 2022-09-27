@@ -1,4 +1,4 @@
-import { NetworkInterfaceInfo, networkInterfaces } from 'os'
+import { NetworkInterfaceInfo, networkInterfaces } from "os";
 
 //获取 mac windows ip 地址
 export function getIpAddress(ip?) {

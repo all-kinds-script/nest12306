@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { MsUserService } from './ms-user.service';
+import { Module } from '@nestjs/common'
+import { MsUserService } from './ms-user.service'
 
 @Module({
-  providers: [MsUserService]
+    providers: [MsUserService],
 })
 export class MsUserModule {}
