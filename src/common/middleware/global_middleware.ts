@@ -52,7 +52,7 @@ const middleware = [
         standardHeaders: true, // 在 `RateLimit-*` 头中返回速率限制信息
         legacyHeaders: false, // 禁用 `X-RateLimit-*` 头
         message: '请求次数过多, 请稍后再试',
-        statusCode: 429,
+        statusCode: 429, // 速率限制时候的 状态码
         requestPropertyName: 'rateLimit', // Express 请求对象上用于存储速率限制信息的属性的名称
         // IP 没有限制的白名单
         skip: (request, response) => {
