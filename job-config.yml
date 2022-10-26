@@ -21,7 +21,7 @@ jobs: [
     # from: to 从哪里到哪里
     # train_code 筛选车次 可以为空，为空则所有车次都可以提交 如 [] 注意大小写需要保持一致
     job: [
-      { start_time: "2022-09-30",from: '北京',to: '驻马店',seats: [ '硬卧' ],train_code: [ "T289" ] },
+#      { start_time: "2022-09-30",from: '北京',to: '驻马店',seats: [ '硬卧' ],train_code: [ "T289" ] },
     ],
 
     # 是否允许余票不足时提交部分乘客
@@ -31,8 +31,6 @@ jobs: [
     # "*王五", #在姓名前加*表示学生购买成人票
     # 7,  # 支持通过序号确定唯一乘客，序号查看可通过  python main.py -t 登录成功之后在 runtime/user/ 下找到对应的 用户名_passengers.json 文件，找到对应的 code 填入
     members: [
-      "戴海洋",
-      "戴继华",
     ],
   }
 ]

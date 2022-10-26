@@ -6,5 +6,6 @@ import AxiosQueryService from '@/module/axios/axios-query.service'
 @Module({
     imports: [AxiosModule],
     providers: [MsLoginService, AxiosQueryService],
+    exports: [MsLoginService],
 })
 export class MsLoginModule {}
