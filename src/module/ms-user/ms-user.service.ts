@@ -10,6 +10,6 @@ export class MsUserService {
 
     public async getPassengersInfo() {
         // await this.msLoginService.qrLogin()
-        await this.axiosUserService.getPassengersInfo()
+        // await this.axiosUserService.getPassengersInfo()
     }
 }
