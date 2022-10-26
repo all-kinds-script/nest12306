@@ -64,6 +64,7 @@
     "express-rate-limit": "^6.6.0",
     "express-session": "^1.17.3",
     "helmet": "^6.0.0",
+    "ioredis": "^5.2.3",
     "jimp": "^0.16.2",
     "joi": "^17.6.4",
     "js-yaml": "^4.1.0",
@@ -79,7 +80,6 @@
     "pug": "^3.0.2",
     "puppeteer": "^19.2.0",
     "qrcode": "^1.5.1",
-    "redis": "^4.3.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.7",
@@ -140,4 +140,3 @@
     "testEnvironment": "node"
   }
 }
-
