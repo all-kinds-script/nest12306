@@ -4,6 +4,7 @@ import { Controller, Get } from '@nestjs/common'
 export class AppController {
     @Get()
     getHello(): string {
+        console.log('执行')
         return 'start'
     }
 }

@@ -51,6 +51,13 @@ const middleware = [
         max: 100, // 将每个 IP 限制为每个窗口 1Ms 100 个请求
         standardHeaders: true, // 在 `RateLimit-*` 头中返回速率限制信息
         legacyHeaders: false, // 禁用 `X-RateLimit-*` 头
+        message: '请求次数过多, 请稍后再试',
+        statusCode: 429,
+        requestPropertyName: 'rateLimit', // Express 请求对象上用于存储速率限制信息的属性的名称
+        // IP 没有限制的白名单
+        skip: (request, response) => {
+            return ['10.20.100'].includes(request.ip)
+        },
     }),
 ]
 

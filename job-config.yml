@@ -4,6 +4,11 @@ runtime: {
   to: '24:00'
 }
 
+account: {
+   username: "",
+   password: "",
+   type: ""
+}
 
 jobs: [
   {
