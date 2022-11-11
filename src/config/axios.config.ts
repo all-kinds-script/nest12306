@@ -2,7 +2,7 @@ import { registerAs } from '@nestjs/config'
 
 const axiosConfig = registerAs('axios', () => ({
     baseURL: 'https://kyfw.12306.cn',
-    timeout: 5000,
+    timeout: 10000,
     withCredentials: true,
     responseType: 'json', // 文档设置为document自动转化为DOM、text为文字、blob等
     maxRedirects: 5,

@@ -15,3 +15,8 @@ export const TEMPLATES_PATH = normalize(`${SRC_PATH}/views/templates`)
 // 实体路径
 export const ENTITY_PATH = normalize(`${SRC_PATH}/db/**/*.entity{.ts,.js}`)
 export const CREATE_ENTITY_PATH = normalize(`${SRC_PATH}/db`)
+
+// 用户信息路径
+export const USER_COOKIE_PATH = normalize(`${PUBLIC_PATH}/user/cookie.json`)
+export const USER_PASSENGERS_PATH = normalize(`${PUBLIC_PATH}/user/passengers.json`)
+export const USER_QR_PATH = normalize(`${PUBLIC_PATH}/QRCode`)

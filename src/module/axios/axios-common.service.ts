@@ -9,14 +9,14 @@ export default class AxiosCommonService {
     constructor(private readonly axios: HttpService, private readonly axiosService: AxiosCookieService) {}
 
     // 根据浏览器标识 获取 到期时间 设备ID 字段头信息 转为 cookie 信息
-    async refreshCookie(): Promise<any> {
+    public async refreshCookie(): Promise<any> {
         const id = await this.getBrowserDeviceId()
         return await this.getExpAndDeviceIdToCookie(id)
     }
 
     // 获取加密后的浏览器特征 ID
     // Observable<AxiosResponse<string>>
-    async getBrowserDeviceId(): Promise<any> {
+    protected async getBrowserDeviceId(): Promise<any> {
         const res = await firstValueFrom(
             this.axios.get('https://12306-rail-id-v2.pjialin.com', {
                 baseURL: '',
@@ -31,7 +31,7 @@ export default class AxiosCommonService {
     }
 
     // 获取到期时间 设备ID 字段头信息
-    async getExpAndDeviceIdToCookie(url: string): Promise<any> {
+    protected async getExpAndDeviceIdToCookie(url: string): Promise<any> {
         const res = await firstValueFrom(
             this.axios.get(url, {
                 baseURL: '',

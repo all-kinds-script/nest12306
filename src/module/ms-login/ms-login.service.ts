@@ -1,14 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common'
 import AxiosQrLoginService from '@/module/axios/axios-qr-login.service'
 import AxiosCommonService from '@/module/axios/axios-common.service'
-import { mkdirSync, statSync, unlinkSync, writeFileSync } from 'fs'
+import { mkdirSync, readFileSync, stat, statSync, unlinkSync, writeFileSync } from 'fs'
+import { parse, format } from 'path'
 import { clearInterval } from 'timers'
 import { HttpService } from '@nestjs/axios'
 import { AxiosCookieService } from '@/module/axios/axios-cookie.service'
 import AxiosQueryService from '@/module/axios/axios-query.service'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
-import { PUBLIC_PATH } from '@/config/constant/path'
+import { USER_COOKIE_PATH } from '@/config/constant/path'
 import { inspect } from 'util'
 
 @Injectable()
@@ -34,52 +35,56 @@ export class MsLoginService {
     // _passport_session=3c5d64a109d14247830e654cf404db861347
     // uamtk=D5s-z4dCo93f4V9lxA_MI0iwehGtO6EPt6z46jND-WUxhd1d0
     // ukey
-    async qrLogin() {
-        await this.axiosCommonService.refreshCookie()
+    qrLogin(): Promise<boolean> {
+        return new Promise(async (resolve, reject) => {
+            const isHaveCookie = statSync(USER_COOKIE_PATH, { throwIfNoEntry: false })?.isFile()
+            if (isHaveCookie) return resolve(true)
 
-        const { uuid, filePath } = await this.axiosQrLoginService.downloadQrToDir()
+            await this.axiosCommonService.refreshCookie()
 
-        const time = setInterval(async () => {
-            const data = await this.axiosQrLoginService.authQrCheck(
-                this.axiosCookieService.cookie.RAIL_DEVICEID,
-                this.axiosCookieService.cookie.RAIL_EXPIRATION,
-                uuid
-            )
+            const { uuid, filePath } = await this.axiosQrLoginService.downloadQrToDir()
 
-            switch (data.result_code) {
-                case '1':
-                    this.logger.info('请确认登录')
-                    break
-                case '2':
-                    clearInterval(time)
+            const time = setInterval(async () => {
+                const data = await this.axiosQrLoginService.authQrCheck(
+                    this.axiosCookieService.cookie.RAIL_DEVICEID,
+                    this.axiosCookieService.cookie.RAIL_EXPIRATION,
+                    uuid
+                )
 
-                    this.axiosCookieService.setCookie({ key: 'uamtk', value: data.uamtk })
+                switch (data.result_code) {
+                    case '1':
+                        this.logger.info('请确认登录')
+                        break
+                    case '2':
+                        clearInterval(time)
 
-                    const new_tk = await this.axiosQrLoginService.authUamtk()
-                    const user_name = await this.axiosQrLoginService.authUamauthclient(new_tk)
-                    await this.axiosQueryService.initTicketsType()
-                    const info = await this.axiosQrLoginService.userInfo()
-                    console.log(info)
+                        this.axiosCookieService.setCookie({ key: 'uamtk', value: data.uamtk })
 
-                    const userDir = `${PUBLIC_PATH}/user`
-                    // 判断是否有路径
-                    const stat = statSync(userDir, { throwIfNoEntry: false })
-                    if (!stat) mkdirSync(userDir, { recursive: true })
+                        const new_tk = await this.axiosQrLoginService.authUamtk()
+                        const user_name = await this.axiosQrLoginService.authUamauthclient(new_tk)
+                        await this.axiosQueryService.initTicketsType()
+                        const info = await this.axiosQrLoginService.userInfo()
+                        console.log(info)
 
-                    writeFileSync(
-                        `${PUBLIC_PATH}/user/cookie.json`,
-                        JSON.stringify(this.axiosCookieService.cookie, null, '\t'),
-                        'binary'
-                    )
-                    break
-                case '3':
-                    unlinkSync(filePath)
-                    this.logger.info('二维码登录已经超时,已经自动重新登录...')
-                    clearInterval(time)
+                        // 判断是否有路径
+                        const stat = statSync(USER_COOKIE_PATH, { throwIfNoEntry: false })
+                        if (!stat) mkdirSync(parse(USER_COOKIE_PATH).dir, { recursive: true })
 
-                    await this.qrLogin()
-                    break
-            }
-        }, 1500)
+                        // 写入文件
+                        const formatJson = JSON.stringify(this.axiosCookieService.cookie, null, '\t')
+                        writeFileSync(USER_COOKIE_PATH, formatJson, 'binary')
+
+                        resolve(true)
+                        break
+                    case '3':
+                        unlinkSync(filePath)
+                        this.logger.info('二维码登录已经超时,已经自动重新登录...')
+                        clearInterval(time)
+
+                        await this.qrLogin()
+                        break
+                }
+            }, 1500)
+        })
     }
 }

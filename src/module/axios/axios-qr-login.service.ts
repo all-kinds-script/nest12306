@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios'
 import { Inject, Injectable } from '@nestjs/common'
 import { mkdirSync, statSync, writeFileSync } from 'fs'
-import { PUBLIC_PATH } from '@/config/constant/path'
+import { PUBLIC_PATH, USER_QR_PATH } from '@/config/constant/path'
 import { firstValueFrom } from 'rxjs'
 import { GenericsObject } from '@/typings/common'
 import * as dayjs from 'dayjs'
@@ -43,19 +43,17 @@ export default class AxiosQrLoginService {
             })
         )
 
-        const data = res.data
-        if (res.data.result_code === '0') {
+        const data = res.data.data
+        if (data.result_code === '0') {
             const base64QrImage: string = data.image
 
-            const QRDir = `${PUBLIC_PATH}/QRCode`
-
             // 判断是否有路径
-            const stat = statSync(QRDir, { throwIfNoEntry: false })
-            if (!stat) mkdirSync(QRDir, { recursive: true })
+            const stat = statSync(USER_QR_PATH, { throwIfNoEntry: false })
+            if (!stat) mkdirSync(USER_QR_PATH, { recursive: true })
 
             // 文件时间不能为: 否则无法写入
             const id = `${dayjs(Date.now()).format('HH点mm分ss秒_YYYY年MM月DD日')}`
-            const filePath = normalize(`${QRDir}/${id}.png`)
+            const filePath = normalize(`${USER_QR_PATH}/${id}.png`)
 
             try {
                 writeFileSync(filePath, base64QrImage, 'base64')
