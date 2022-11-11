@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios'
 import { Inject, Injectable } from '@nestjs/common'
 import { mkdirSync, statSync, writeFileSync } from 'fs'
-import { PUBLIC_PATH, USER_QR_PATH } from '@/config/constant/path'
+import { USER_QR_PATH } from '@/config/constant/path'
 import { firstValueFrom } from 'rxjs'
 import { GenericsObject } from '@/typings/common'
 import * as dayjs from 'dayjs'
@@ -10,6 +10,7 @@ import { URLSearchParams } from 'url'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
 import { decodeQr, encodeQrTerminal } from '@/utils/qrcode'
+import * as open from 'open'
 
 @Injectable()
 export default class AxiosQrLoginService {
@@ -34,38 +35,42 @@ export default class AxiosQrLoginService {
         return res.data
     }
 
-    async downloadQrToDir(): Promise<GenericsObject<string> | null> {
-        const res = await firstValueFrom(
-            this.axios.get('/passport/web/create-qr64', {
-                params: {
-                    appid: 'otn',
-                },
-            })
-        )
+    downloadQrToDir(): Promise<GenericsObject<string> | null> {
+        return new Promise(async (resolve, reject) => {
+            const res = await firstValueFrom(
+                this.axios.get('/passport/web/create-qr64', {
+                    params: {
+                        appid: 'otn',
+                    },
+                })
+            )
 
-        const data = res.data
-        if (data.result_code === '0') {
-            const base64QrImage: string = data.image
+            const data = res.data
+            if (data.result_code === '0') {
+                const base64QrImage: string = data.image
 
-            // 判断是否有路径
-            const stat = statSync(USER_QR_PATH, { throwIfNoEntry: false })
-            if (!stat) mkdirSync(USER_QR_PATH, { recursive: true })
+                // 判断是否有路径
+                const stat = statSync(USER_QR_PATH, { throwIfNoEntry: false })
+                if (!stat) mkdirSync(USER_QR_PATH, { recursive: true })
 
-            // 文件时间不能为: 否则无法写入
-            const id = `${dayjs(Date.now()).format('HH点mm分ss秒_YYYY年MM月DD日')}`
-            const filePath = normalize(`${USER_QR_PATH}/${id}.png`)
+                // 文件时间不能为: 否则无法写入
+                const id = `${dayjs(Date.now()).format('HH点mm分ss秒_YYYY年MM月DD日')}`
+                const filePath = normalize(`${USER_QR_PATH}/${id}.png`)
 
-            try {
-                writeFileSync(filePath, base64QrImage, 'base64')
-            } catch (e) {
-                this.logger.error(e)
+                try {
+                    writeFileSync(filePath, base64QrImage, 'base64')
+                } catch (e) {
+                    this.logger.error(e)
+                }
+
+                await open(filePath, { wait: false })
+
+                const decode = await decodeQr({ data: base64QrImage })
+                await encodeQrTerminal(decode)
+
+                return resolve({ filePath, uuid: data.uuid })
             }
-
-            const decode = await decodeQr({ data: base64QrImage })
-            await encodeQrTerminal(decode)
-
-            return { filePath, uuid: data.uuid }
-        }
+        })
     }
 
     // cookie

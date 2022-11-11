@@ -10,7 +10,6 @@ import AxiosQueryService from '@/module/axios/axios-query.service'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
 import { USER_COOKIE_PATH } from '@/config/constant/path'
-import { inspect } from 'util'
 
 @Injectable()
 export class MsLoginService {
