@@ -1,12 +1,12 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common'
 import { HttpService } from '@nestjs/axios'
-import { AxiosInstance } from 'axios'
+import {AxiosInstance} from "axios";
 import { Cache } from 'cache-manager'
 import { GenericsObject } from '@/typings/common'
 
 @Injectable()
 export class AxiosCookieService {
-    private readonly axiosRef: AxiosInstance
+    private readonly axiosRef:AxiosInstance
     private cookies: GenericsObject<string> = {}
 
     constructor(private readonly axios: HttpService, @Inject(CACHE_MANAGER) private readonly cacheManage: Cache) {

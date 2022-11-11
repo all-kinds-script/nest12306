@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { HttpService } from '@nestjs/axios'
-import { AxiosInstance } from 'axios'
 import { AxiosCookieService } from '@/module/axios/axios-cookie.service'
+import { AxiosInstance } from "axios";
 
 @Injectable()
 export class AxiosInterceptorService {
-    private readonly axiosRef: AxiosInstance
+    private readonly axiosRef:AxiosInstance
 
     constructor(private readonly axios: HttpService, private readonly axiosCookieService: AxiosCookieService) {
         this.axiosRef = this.axios.axiosRef
