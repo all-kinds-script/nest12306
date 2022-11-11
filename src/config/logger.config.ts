@@ -29,7 +29,7 @@ const defaultOptions = {
     maxFiles: '14d',
 }
 
-const winstonConfig = registerAs('winston', () => ({
+const winstonConfig: any = registerAs('winston', () => ({
     level: LOG_LEVEL,
     levels: LOG_LEVELS_CONFIG,
     silent: LOG_FLAG, // 是否禁用所有日志
