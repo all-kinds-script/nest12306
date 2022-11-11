@@ -43,7 +43,7 @@ export default class AxiosQrLoginService {
             })
         )
 
-        const data = res.data.data
+        const data = res.data
         if (data.result_code === '0') {
             const base64QrImage: string = data.image
 
