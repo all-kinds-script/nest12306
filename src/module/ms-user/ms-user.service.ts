@@ -11,11 +11,7 @@ export class MsUserService {
     public async getPassengersInfo() {
         const isLogin = await this.msLoginService.qrLogin()
         if (isLogin) {
-            const passengersInfo = await this.axiosUserService.getPassengersInfo()
-
-            const format = JSON.stringify(passengersInfo, null, '\t')
-            writeFileSync(USER_PASSENGERS_PATH, format)
-            return passengersInfo
+            await this.axiosUserService.getPassengersInfo()
         }
     }
 }
