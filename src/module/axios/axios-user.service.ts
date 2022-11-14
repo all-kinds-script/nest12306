@@ -19,7 +19,7 @@ export default class AxiosUserService {
 
                 resolve(data.normal_passengers)
             } else {
-                resolve(false)
+                resolve(null)
             }
         })
     }
