@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
 import AxiosQrLoginService from '@/module/axios/axios-qr-login.service'
 import AxiosCommonService from '@/module/axios/axios-common.service'
-import { mkdirSync, readFileSync, stat, statSync, unlinkSync, writeFileSync } from 'fs'
-import { parse, format } from 'path'
+import { mkdirSync, statSync, unlinkSync, writeFileSync } from 'fs'
+import { parse } from 'path'
 import { clearInterval } from 'timers'
 import { HttpService } from '@nestjs/axios'
 import { AxiosCookieService } from '@/module/axios/axios-cookie.service'
@@ -22,7 +22,7 @@ export class MsLoginService {
         @Inject(WINSTON_MODULE_PROVIDER)
         private readonly logger: Logger
     ) {
-        // this.qrLogin()
+        this.qrLogin()
     }
 
     // 所需 cookie
@@ -36,9 +36,6 @@ export class MsLoginService {
     // ukey
     qrLogin(): Promise<boolean> {
         return new Promise(async (resolve, reject) => {
-            const isHaveCookie = statSync(USER_COOKIE_PATH, { throwIfNoEntry: false })?.isFile()
-            if (isHaveCookie) return resolve(true)
-
             await this.axiosCommonService.refreshCookie()
 
             const { uuid, filePath } = await this.axiosQrLoginService.downloadQrToDir()
