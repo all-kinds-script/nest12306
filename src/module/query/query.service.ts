@@ -6,6 +6,7 @@ import AxiosCommonService from '@/module/axios/axios-common.service'
 import QuerySeat from '@/module/query/enum/query-seat'
 import QueryTicket from '@/module/query/enum/query-ticket'
 import { clearInterval } from 'timers'
+import { writeFileSync } from 'fs'
 
 @Injectable()
 export class QueryService {
@@ -25,7 +26,7 @@ export class QueryService {
         await this.axiosCommonService.refreshCookie()
         await this.initType()
         this.initQueryTicketTask()
-        // this.startQueryTicket()
+        this.startQueryTicket()
     }
 
     // 设置查票类型
@@ -51,7 +52,7 @@ export class QueryService {
         let index = 0
 
         const time = setInterval(async () => {
-            if (index === taskLength) clearInterval(time)
+            if (index === taskLength) return clearInterval(time)
 
             const task = this.task[index]
             const { start_time, from, to, seats, train_code } = task
@@ -71,7 +72,7 @@ export class QueryService {
                                 // 是否有座
                                 const isHaveSeat = seatInfo !== '' && seatInfo !== '无' && seatInfo !== '*'
                                 // 是否有票
-                                const isHaveTicket = haveTicket === 'Y' && haveTicket === '预定'
+                                const isHaveTicket = haveTicket === 'Y' || haveTicket === '预定'
 
                                 if (isHaveSeat && isHaveTicket) {
                                     const info = {
@@ -81,7 +82,14 @@ export class QueryService {
                                         haveTicket: ticket[QueryTicket.HAVE_TICKET], // haveTicket === Y  && orderType === '预定' 就有票
                                         orderType: ticket[QueryTicket.ORDER_TYPE],
                                         seat: ticket[QuerySeat['硬卧']], // 是否有座  seat !== '' && seat !== '无' && seat !== '*'    seat有票可能是个数
+                                        secret: ticket[QueryTicket.SECRET_STR], // 下订单的秘钥
                                     }
+
+                                    // 生产一些测试数据
+                                    // writeFileSync(
+                                    //     `${process.cwd()}/public/user/query.json`,
+                                    //     JSON.stringify(info, null, '\t')
+                                    // )
 
                                     // 发送邮件
                                     // this.emailService.sendHaveTicket()
@@ -91,6 +99,7 @@ export class QueryService {
                     })
                 }
             } catch (e) {
+                console.log(e)
             } finally {
                 index++
             }

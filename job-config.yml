@@ -21,7 +21,7 @@ jobs: [
     # from: to 从哪里到哪里
     # train_code 筛选车次 可以为空，为空则所有车次都可以提交 如 [] 注意大小写需要保持一致
     job: [
-#      { start_time: "2022-09-30",from: '北京',to: '驻马店',seats: [ '硬卧' ],train_code: [ "T289" ] },
+      { start_time: "2022-11-19",from: '北京',to: '驻马店',seats: [ '硬卧' ],train_code: [ "K157" ] },
     ],
 
     # 是否允许余票不足时提交部分乘客

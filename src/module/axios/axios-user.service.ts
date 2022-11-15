@@ -12,6 +12,7 @@ export default class AxiosUserService {
             const res = this.axios.post('/otn/confirmPassenger/getPassengerDTOs', {})
             const data = (await res.toPromise()).data.data
 
+            console.log(data)
             if (data.normal_passengers) {
                 // 写入文件
                 const format = JSON.stringify(data.normal_passengers, null, '\t')

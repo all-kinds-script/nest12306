@@ -11,6 +11,7 @@ import AxiosQueryService from '@/module/axios/axios-query.service'
 import AxiosMsUser from '@/module/axios/axios-ms-user'
 import { AxiosInterceptorService } from '@/module/axios/axios-interceptor.service'
 import AxiosUserService from '@/module/axios/axios-user.service'
+import AxiosOrderService from '@/module/axios/axios-order.service'
 
 @Module({
     imports: [
@@ -30,6 +31,7 @@ import AxiosUserService from '@/module/axios/axios-user.service'
         AxiosMsUser,
         AxiosInterceptorService,
         AxiosUserService,
+        AxiosOrderService,
     ],
     exports: [
         AxiosCdnService,
@@ -41,6 +43,7 @@ import AxiosUserService from '@/module/axios/axios-user.service'
         AxiosCookieService,
         AxiosInterceptorService,
         AxiosUserService,
+        AxiosOrderService,
     ],
 })
 export class AxiosModule {}

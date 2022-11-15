@@ -4,6 +4,7 @@ enum QueryTicket {
     TRAIN_CODE = 3, // 火车编号
     HAVE_TICKET = 11, // 是否有票
     ORDER_TYPE = 1, // 票单的类型
+    SECRET_STR = 0, // 下订单时的秘钥
 }
 
 export default QueryTicket

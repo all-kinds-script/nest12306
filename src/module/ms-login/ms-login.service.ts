@@ -21,9 +21,7 @@ export class MsLoginService {
         private readonly axiosQueryService: AxiosQueryService,
         @Inject(WINSTON_MODULE_PROVIDER)
         private readonly logger: Logger
-    ) {
-        this.qrLogin()
-    }
+    ) {}
 
     // 所需 cookie
     // BIGipServerotn=418382346.50210.0000
@@ -60,7 +58,6 @@ export class MsLoginService {
                         const user_name = await this.axiosQrLoginService.authUamauthclient(new_tk)
                         await this.axiosQueryService.initTicketsType()
                         const info = await this.axiosQrLoginService.userInfo()
-                        console.log(info)
 
                         // 判断是否有路径
                         const stat = statSync(USER_COOKIE_PATH, { throwIfNoEntry: false })
